@@ -15,3 +15,37 @@ body {
 ::-webkit-scrollbar-thumb { background: #1c1f27; border-radius: 2px; }
 
 input::placeholder { color: #3a4050; }
+
+/* Transitions */
+.slide-enter-active { transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16,1,0.3,1); }
+.slide-leave-active { transition: opacity 0.15s ease-in, transform 0.15s ease-in; }
+.slide-enter-from, .slide-leave-to { opacity: 0; transform: translateY(-10px); }
+
+.fade-enter-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.fade-leave-active { transition: opacity 0.1s ease-in, transform 0.1s ease-in; }
+.fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(-4px); }
+
+/* Wiki link hover */
+.wiki-link {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  color: #3a4050; text-decoration: none; padding: 5px 9px; border-radius: 5px;
+  border: 1px solid #1c1f27; transition: color 0.15s, border-color 0.15s;
+  display: flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.wiki-link:hover { color: #c49a3c; border-color: rgba(196,154,60,0.35); }
+
+/* Footer tiltann link */
+.tiltann-link {
+  color: #2a3040; text-decoration: none; transition: color 0.15s;
+}
+.tiltann-link:hover { color: #c49a3c; }
+
+/* Locale select */
+.locale-select {
+  background: #0e1016; border: 1px solid #1c1f27; color: #c49a3c;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 8px; border-radius: 5px; cursor: pointer; outline: none;
+  transition: border-color 0.15s;
+}
+.locale-select:hover { border-color: rgba(196,154,60,0.35); }
+.locale-select option { background: #0e1016; color: #c49a3c; }
