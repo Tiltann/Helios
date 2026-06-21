@@ -7,10 +7,10 @@ import { T, type Locale, type TKey, LOCALE_LABELS } from './i18n'
 const LOCALES = Object.keys(LOCALE_LABELS) as Locale[]
 
 const CATEGORY_COLOR: Record<string, string> = {
-  resource: '#5284e0', prime: '#c49a3c', warframe: '#52c27a', mod: '#c47a3c', all: '#c49a3c',
+  resource: '#5284e0', prime: '#c49a3c', warframe: '#52c27a', mod: '#c47a3c', relic: '#9c6cc4',
 }
 
-const CATEGORIES = ['all', 'resource', 'warframe', 'mod', 'prime'] as const
+const CATEGORIES = ['all', 'resource', 'warframe', 'mod', 'prime', 'relic'] as const
 
 const BEGINNER_KEYS: TKey[] = [
   'termSurvival', 'termDefense', 'termExcavation', 'termDarkSector',
@@ -18,7 +18,6 @@ const BEGINNER_KEYS: TKey[] = [
   'termVoidFissure', 'termBounty', 'termVendor', 'termRailjack',
 ]
 
-// ── State ─────────────────────────────────────────────────────────────────
 const locale         = ref<Locale>('en')
 const t              = computed(() => T[locale.value])
 const catLabel       = computed((): Record<string, string> => ({
@@ -27,12 +26,13 @@ const catLabel       = computed((): Record<string, string> => ({
   prime:    t.value.catPrime,
   warframe: t.value.catWarframe,
   mod:      t.value.catMod,
+  relic:    t.value.catRelic,
 }))
 
 const query          = ref('')
 const results        = ref<Item[]>([])
 const selected       = ref<Item | null>(null)
-const cursor         = ref(0)
+const cursor         = ref(-1)
 const input          = ref<HTMLInputElement | null>(null)
 const beginnerModal  = ref(false)
 const imageMap       = ref<Record<string, string>>({})
@@ -40,52 +40,54 @@ const activeCategory = ref<string | null>(null)
 
 const fuse = new Fuse(ITEMS, { keys: ['name', 'category'], threshold: 0.35 })
 
-// ── Computed ───────────────────────────────────────────────────────────────
 const filteredResults = computed(() =>
   activeCategory.value
     ? results.value.filter(i => i.category === activeCategory.value)
     : results.value
 )
 
-const browseItems = computed(() =>
-  activeCategory.value
+const displayItems = computed(() => {
+  if (query.value.trim()) return filteredResults.value
+  return activeCategory.value
     ? ITEMS.filter(i => i.category === activeCategory.value)
     : ITEMS
-)
+})
 
-// ── Functions ─────────────────────────────────────────────────────────────
+function isActiveTab(cat: string): boolean {
+  return cat === 'all' ? !activeCategory.value : activeCategory.value === cat
+}
+
 function search() {
   const q = query.value.trim()
-  if (!q) { results.value = []; selected.value = null; return }
-  const hits = fuse.search(q).slice(0, 8).map(r => r.item)
-  results.value = hits
-  selected.value = hits[0] ?? null
-  cursor.value = 0
+  if (!q) { results.value = []; cursor.value = -1; return }
+  results.value = fuse.search(q).slice(0, 10).map(r => r.item)
+  cursor.value = -1
 }
 
-function pick(item: Item, i: number) {
-  selected.value = item
-  cursor.value = i
-}
-
-function selectBrowse(item: Item) {
-  selected.value = item
+function pick(item: Item) {
+  if (selected.value?.name === item.name) {
+    selected.value = null
+    cursor.value = -1
+  } else {
+    selected.value = item
+    cursor.value = displayItems.value.findIndex(i => i.name === item.name)
+  }
 }
 
 function onKey(e: KeyboardEvent) {
-  const list = filteredResults.value
+  const list = displayItems.value
   if (e.key === 'ArrowDown') {
     e.preventDefault()
-    const n = Math.min(cursor.value + 1, list.length - 1)
-    if (list[n]) pick(list[n], n)
+    cursor.value = Math.min(cursor.value + 1, list.length - 1)
+    selected.value = list[cursor.value] ?? null
   } else if (e.key === 'ArrowUp') {
     e.preventDefault()
-    const n = Math.max(cursor.value - 1, 0)
-    if (list[n]) pick(list[n], n)
+    if (cursor.value > 0) cursor.value--
+    selected.value = list[cursor.value] ?? null
   } else if (e.key === 'Escape') {
-    query.value = ''
-    search()
-    beginnerModal.value = false
+    if (beginnerModal.value) { beginnerModal.value = false; return }
+    if (selected.value) { selected.value = null; cursor.value = -1; return }
+    query.value = ''; search()
   }
 }
 
@@ -97,28 +99,29 @@ function spaceToFocus(e: KeyboardEvent) {
 }
 
 function wikiUrl(item: Item): string {
-  const slug = (item.wikiSlug ?? item.name).replace(/ /g, '_')
-  return `https://warframe.wiki.gg/wiki/${slug}`
+  return `https://wiki.warframe.com/wiki/${(item.wikiSlug ?? item.name).replace(/ /g, '_')}`
 }
 
 function getImage(item: Item): string {
-  if (item.image) return item.image
-  if (item.imageName) return `https://cdn.warframestat.us/img/${item.imageName}`
-  return imageMap.value[item.name] ?? ''
+  return item.image
+    || imageMap.value[item.name]
+    || (item.imageName ? `https://cdn.warframestat.us/img/${item.imageName}` : '')
+}
+
+function bestSource(item: Item): string {
+  const s = item.sources[0]
+  return s ? [s.mission, s.planet, s.type].filter(Boolean).join(' · ') : ''
 }
 
 function termParts(key: TKey): { label: string; body: string } {
   const full = t.value[key]
   const sep  = full.indexOf(': ')
-  if (sep === -1) return { label: '', body: full }
-  return { label: full.slice(0, sep), body: full.slice(sep + 2) }
+  return sep === -1 ? { label: '', body: full } : { label: full.slice(0, sep), body: full.slice(sep + 2) }
 }
 
-// ── Lifecycle ──────────────────────────────────────────────────────────────
 onMounted(async () => {
   const lang = navigator.language.slice(0, 2).toLowerCase()
   if (LOCALES.includes(lang as Locale)) locale.value = lang as Locale
-
   input.value?.focus()
   window.addEventListener('keydown', spaceToFocus)
 
@@ -127,315 +130,277 @@ onMounted(async () => {
       'https://api.warframestat.us/items?only=name,imageName'
     ).then(r => r.json())
     const map: Record<string, string> = {}
-    for (const item of data) {
-      if (item.imageName) map[item.name] = `https://cdn.warframestat.us/img/${item.imageName}`
+    for (const d of data) {
+      if (!d.imageName) continue
+      const url = `https://cdn.warframestat.us/img/${d.imageName}`
+      map[d.name] = url
+      if (d.name.endsWith(' Warframe')) map[d.name.slice(0, -9)] = url
     }
     imageMap.value = map
   } catch { /* silently ignore */ }
 })
 
 onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
-
-const hasBorder = computed(() => !!query.value)
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col items-center px-4" style="background:#07090f">
+  <div class="min-h-screen bg-[#07090f] text-[#d4c4a0] font-sans antialiased">
 
-    <!-- Beginner modal overlay -->
+    <!-- Beginner modal -->
     <Transition name="fade">
       <div v-if="beginnerModal"
-           class="fixed inset-0 z-50 flex items-center justify-center p-4"
-           style="background:rgba(7,9,15,0.9);backdrop-filter:blur(4px)"
+           class="fixed inset-0 z-50 flex items-center justify-center p-4
+                  bg-[rgba(7,9,15,0.92)] backdrop-blur-[4px]"
            @click.self="beginnerModal = false">
-        <div class="w-full max-w-[700px] rounded-[12px] overflow-hidden"
-             style="border:1px solid #1c1f27;background:#0e1016;max-height:85vh;overflow-y:auto">
+        <div class="w-full max-w-[700px] rounded-[10px] overflow-hidden
+                    border border-[#1c1f27] bg-[#0b0d12] max-h-[88vh] overflow-y-auto">
 
-          <div class="flex items-center justify-between"
-               style="padding:16px 20px;border-bottom:1px solid #14171e;background:rgba(196,154,60,0.03)">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-b-[#14171e]">
             <div>
-              <div style="font-size:14px;font-weight:700;color:#c49a3c">{{ t.beginnerTitle }}</div>
-              <div style="font-size:11px;color:#3a4050;margin-top:2px">{{ t.beginnerIntro }}</div>
+              <div class="text-[13px] font-bold text-[#c49a3c]">{{ t.beginnerTitle }}</div>
+              <div class="text-[11px] text-[#3a4050] mt-[2px]">{{ t.beginnerIntro }}</div>
             </div>
             <button @click="beginnerModal = false"
-                    style="color:#3a4050;background:transparent;border:none;cursor:pointer;
-                           font-size:26px;line-height:1;padding:2px 8px;flex-shrink:0;transition:color 0.15s"
-                    @mouseenter="(e) => ((e.target as HTMLElement).style.color='#c49a3c')"
-                    @mouseleave="(e) => ((e.target as HTMLElement).style.color='#3a4050')">×</button>
+                    class="bg-transparent border-none cursor-pointer text-[24px] leading-none
+                           px-[10px] py-1 text-[#3a4050] shrink-0
+                           hover:text-[#c49a3c] transition-colors duration-150">×</button>
           </div>
 
-          <div style="padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px">
+          <div class="px-4 py-[14px] grid gap-2
+                      grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
             <div v-for="key in BEGINNER_KEYS" :key="key"
-                 style="padding:10px 12px;background:#111318;border-radius:7px;border:1px solid #14171e">
-              <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#c49a3c;margin-bottom:4px">
+                 class="px-3 py-[10px] bg-[#0f1219] rounded-[6px] border border-[#14171e]">
+              <div class="text-[9px] font-bold uppercase tracking-[0.12em] text-[#c49a3c] mb-1">
                 {{ termParts(key).label }}
               </div>
-              <div style="font-size:11px;color:#4a5568;line-height:1.55">
+              <div class="text-[11px] text-[#4a5568] leading-[1.6]">
                 {{ termParts(key).body }}
               </div>
             </div>
           </div>
 
-          <div style="padding:10px 20px;border-top:1px solid #14171e">
-            <span style="font-size:10.5px;color:#2e3545;font-style:italic">{{ t.darkSectorNote }}</span>
+          <div class="px-5 py-[10px] border-t border-t-[#14171e]">
+            <span class="text-[10px] text-[#272e3a] italic">{{ t.darkSectorNote }}</span>
           </div>
         </div>
       </div>
     </Transition>
 
-    <!-- Header -->
-    <div class="mt-[10vh] mb-5 text-center">
-      <div class="flex items-center justify-center gap-3 mb-1.5">
-        <img src="/logo.svg" alt="Helios" style="width:36px;height:36px"/>
-        <span style="font-size:13px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#c49a3c">
-          Helios
-        </span>
+    <!-- Page column -->
+    <div class="max-w-[640px] mx-auto px-5">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between pt-11 pb-[22px]">
+        <div class="flex items-center gap-2.5">
+          <img src="/logo.svg" alt="Helios" class="w-6 h-6"/>
+          <span class="text-[11px] font-bold tracking-[0.22em] uppercase text-[#c49a3c]">HELIOS</span>
+          <span class="text-[11px] text-[#252c38] ml-1.5 tracking-[0.04em]">{{ t.subtitle }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button @click="beginnerModal = true"
+                  class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
+                         rounded cursor-pointer transition-all duration-150
+                         text-[#3a4050] bg-transparent border border-[#1c1f27]
+                         hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.3)]">
+            {{ t.beginnerMode }}
+          </button>
+          <select v-model="locale"
+                  class="bg-[#0b0d12] border border-[#1c1f27] text-[#c49a3c]
+                         text-[10px] font-bold tracking-[0.1em] uppercase
+                         px-2 py-[5px] rounded cursor-pointer outline-none
+                         hover:border-[rgba(196,154,60,0.35)] transition-colors duration-150">
+            <option v-for="l in LOCALES" :key="l" :value="l"
+                    class="bg-[#0b0d12] text-[#c49a3c]">{{ LOCALE_LABELS[l] }}</option>
+          </select>
+        </div>
       </div>
-      <p style="font-size:12px;color:#3a4050;letter-spacing:0.08em">{{ t.subtitle }}</p>
-    </div>
 
-    <!-- Controls row -->
-    <div class="w-full max-w-[640px] flex items-center justify-between mb-3">
-      <button
-        @click="beginnerModal = !beginnerModal"
-        :style="{
-          fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
-          padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', transition: 'all 0.15s',
-          color: beginnerModal ? '#c49a3c' : '#3a4050',
-          background: beginnerModal ? 'rgba(196,154,60,0.08)' : 'transparent',
-          border: `1px solid ${beginnerModal ? 'rgba(196,154,60,0.3)' : '#1c1f27'}`,
-        }"
-      >{{ t.beginnerMode }}</button>
-
-      <select v-model="locale" class="locale-select">
-        <option v-for="l in LOCALES" :key="l" :value="l">{{ LOCALE_LABELS[l] }}</option>
-      </select>
-    </div>
-
-    <!-- Search -->
-    <div class="w-full max-w-[640px]">
-      <div class="relative transition-all duration-200 rounded-[10px]"
-           :style="{
-             border: `1px solid ${hasBorder ? '#c49a3c55' : '#1c1f27'}`,
-             background: '#0e1016',
-             boxShadow: hasBorder ? '0 0 0 3px rgba(196,154,60,0.05)' : undefined,
-           }">
-        <svg class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-30"
-             width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#c49a3c" stroke-width="1.6">
-          <circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/>
-        </svg>
-        <input
-          ref="input"
-          v-model="query"
-          @input="search"
-          @keydown="onKey"
-          :placeholder="t.placeholder"
-          class="w-full bg-transparent border-none outline-none"
-          style="padding:15px 44px;font-size:15.5px;color:#d4c4a0;font-family:inherit"
-        />
-        <button v-if="query" @click="query='';search()"
-          class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer border-none bg-transparent"
-          style="color:#3a4050;font-size:20px;line-height:1;padding:4px">×</button>
+      <!-- Search box -->
+      <div class="relative mb-[14px]">
+        <div class="rounded-[8px] bg-[#0b0d12] transition-all duration-150"
+             :class="query
+               ? 'border border-[rgba(196,154,60,0.27)] shadow-[0_0_0_3px_rgba(196,154,60,0.04)]'
+               : 'border border-[#1c1f27]'">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-25"
+               width="15" height="15" viewBox="0 0 16 16"
+               fill="none" stroke="#c49a3c" stroke-width="1.6">
+            <circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/>
+          </svg>
+          <input ref="input" v-model="query" @input="search" @keydown="onKey"
+                 :placeholder="t.placeholder"
+                 class="w-full bg-transparent border-none outline-none
+                        px-10 py-[13px] text-[14.5px] text-[#c8b890]
+                        placeholder:text-[#2e3848]"/>
+          <button v-if="query" @click="query='';search()"
+                  class="absolute right-3 top-1/2 -translate-y-1/2
+                         border-none bg-transparent cursor-pointer
+                         text-[#2e3848] text-[18px] leading-none px-1.5 py-1
+                         hover:text-[#c49a3c] transition-colors duration-100">×</button>
+        </div>
       </div>
-    </div>
 
-    <!-- Category tabs -->
-    <div class="w-full max-w-[640px] flex gap-2 mt-3 flex-wrap">
-      <button
-        v-for="cat in CATEGORIES"
-        :key="cat"
-        @click="activeCategory = cat === 'all' ? null : cat"
-        :style="{
-          fontSize: '10px', fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.1em', padding: '5px 13px', borderRadius: '20px',
-          cursor: 'pointer', transition: 'all 0.15s',
-          color: (activeCategory === cat || (cat === 'all' && !activeCategory))
-            ? '#07090f' : (CATEGORY_COLOR[cat] ?? '#3a4050'),
-          background: (activeCategory === cat || (cat === 'all' && !activeCategory))
-            ? (CATEGORY_COLOR[cat] ?? '#c49a3c') : 'transparent',
-          border: `1px solid ${(activeCategory === cat || (cat === 'all' && !activeCategory))
-            ? (CATEGORY_COLOR[cat] ?? '#c49a3c') : '#1c1f27'}`,
-        }"
-      >{{ catLabel[cat] ?? cat }}</button>
-    </div>
-
-    <!-- No results -->
-    <Transition name="fade">
-      <p v-if="query && !filteredResults.length" class="w-full max-w-[640px] text-center mt-4"
-         style="font-size:11.5px;color:#3a4050">
-        {{ t.noResults }}
-      </p>
-    </Transition>
-
-    <!-- Results list (when searching) -->
-    <Transition name="fade">
-      <div v-if="query && filteredResults.length" class="w-full max-w-[640px] mt-2 overflow-hidden rounded-[10px]"
-           style="border:1px solid #1c1f27;background:#0e1016">
-        <button
-          v-for="(item, i) in filteredResults"
-          :key="item.name"
-          class="flex items-center gap-3 w-full text-left cursor-pointer border-none transition-colors duration-75"
-          :style="{
-            padding: '10px 14px',
-            background: selected?.name === item.name ? 'rgba(196,154,60,0.05)' : 'transparent',
-            borderBottom: i < filteredResults.length - 1 ? '1px solid #0d0f14' : 'none',
-          }"
-          @click="pick(item, i)"
-          @mouseenter="pick(item, i)"
-        >
-          <img v-if="getImage(item)" :src="getImage(item)" alt=""
-               class="shrink-0 object-contain opacity-80"
-               style="width:26px;height:26px"
-               @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
-          <div v-else class="shrink-0 rounded" style="width:26px;height:26px;background:#14171e"/>
-
-          <span class="flex-1" style="font-size:13.5px;color:#c8b890;font-weight:500">{{ item.name }}</span>
-
-          <span class="shrink-0" :style="{
-            fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
-            padding: '2px 6px', borderRadius: '3px',
-            color: CATEGORY_COLOR[item.category],
-            background: CATEGORY_COLOR[item.category] + '18',
-            border: `1px solid ${CATEGORY_COLOR[item.category]}28`,
-          }">{{ catLabel[item.category] }}</span>
+      <!-- Category tabs -->
+      <div class="flex gap-2 flex-wrap mb-[18px]">
+        <button v-for="cat in CATEGORIES" :key="cat"
+                @click="activeCategory = cat === 'all' ? null : cat"
+                class="text-[9.5px] font-bold uppercase tracking-[0.1em]
+                       px-[11px] py-1 rounded-full cursor-pointer
+                       transition-all duration-150 leading-[1.4]"
+                :style="isActiveTab(cat) ? {
+                  color: '#07090f',
+                  background: CATEGORY_COLOR[cat] ?? '#c49a3c',
+                  border: '1px solid transparent',
+                } : {
+                  color: cat === 'all' ? '#3a4050' : (CATEGORY_COLOR[cat] ?? '#3a4050'),
+                  background: 'transparent',
+                  border: '1px solid #1c1f27',
+                }">
+          {{ catLabel[cat] ?? cat }}
         </button>
       </div>
-    </Transition>
 
-    <!-- Browse grid (when not searching) -->
-    <Transition name="fade">
-      <div v-if="!query" class="w-full max-w-[640px] mt-3">
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px">
-          <button
-            v-for="item in browseItems"
-            :key="item.name"
-            @click="selectBrowse(item)"
-            class="text-left cursor-pointer rounded-[8px] transition-colors duration-75"
-            :style="{
-              padding: '10px 12px',
-              border: `1px solid ${selected?.name === item.name ? 'rgba(196,154,60,0.4)' : '#1c1f27'}`,
-              background: selected?.name === item.name ? 'rgba(196,154,60,0.04)' : '#0e1016',
-            }"
-            @mouseenter="(e) => { if (selected?.name !== item.name) (e.currentTarget as HTMLElement).style.borderColor = '#c49a3c33' }"
-            @mouseleave="(e) => { if (selected?.name !== item.name) (e.currentTarget as HTMLElement).style.borderColor = '#1c1f27' }"
-          >
-            <div class="flex items-center gap-2 mb-2">
+      <!-- No results -->
+      <Transition name="fade">
+        <p v-if="query && !displayItems.length"
+           class="text-[12px] text-[#2e3848] py-2">
+          {{ t.noResults }}
+        </p>
+      </Transition>
+
+      <!-- Item list -->
+      <div>
+        <template v-for="item in displayItems" :key="item.name">
+
+          <button @click="pick(item)"
+                  class="w-full text-left border-none cursor-pointer
+                         flex items-center gap-3 pl-[10px] py-[10px]
+                         border-b border-b-[#0f1219] transition-colors duration-100"
+                  :class="selected?.name === item.name ? 'bg-[rgba(196,154,60,0.03)]' : 'bg-transparent'"
+                  :style="{ borderLeft: selected?.name === item.name ? '2px solid #c49a3c' : '2px solid transparent' }">
+
+            <!-- Image with dot fallback -->
+            <div class="relative w-[18px] h-[18px] shrink-0">
+              <span class="absolute inset-0 flex items-center justify-center">
+                <span class="w-[7px] h-[7px] rounded-full opacity-50"
+                      :style="{ background: CATEGORY_COLOR[item.category] ?? '#3a4050' }"/>
+              </span>
               <img v-if="getImage(item)" :src="getImage(item)" alt=""
-                   style="width:22px;height:22px;object-fit:contain;opacity:0.8;flex-shrink:0"
+                   class="relative z-[1] w-[18px] h-[18px] object-contain opacity-80"
                    @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
-              <div v-else style="width:22px;height:22px;background:#14171e;border-radius:4px;flex-shrink:0"/>
-              <span style="font-size:12px;font-weight:500;color:#c8b890;line-height:1.3">{{ item.name }}</span>
             </div>
-            <span :style="{
-              fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
-              padding: '1px 6px', borderRadius: '3px',
-              color: CATEGORY_COLOR[item.category],
-              background: CATEGORY_COLOR[item.category] + '18',
-            }">{{ catLabel[item.category] }}</span>
-          </button>
-        </div>
-      </div>
-    </Transition>
 
-    <!-- Detail card -->
-    <Transition name="fade">
-      <div v-if="selected" class="w-full max-w-[640px] mt-4 mb-2 overflow-hidden rounded-[10px]"
-           style="border:1px solid #1c1f27;background:#0e1016">
-
-        <!-- Card header -->
-        <div class="flex items-center gap-3.5"
-             style="padding:14px 18px;border-bottom:1px solid #14171e;background:rgba(196,154,60,0.025)">
-          <img v-if="getImage(selected)" :src="getImage(selected)" alt=""
-               class="object-contain opacity-90 shrink-0"
-               style="width:38px;height:38px"
-               @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
-          <div v-else class="shrink-0 rounded" style="width:38px;height:38px;background:#14171e"/>
-
-          <div class="flex-1 min-w-0">
-            <div style="font-size:15.5px;font-weight:600;color:#d4c4a0">{{ selected.name }}</div>
-            <div style="font-size:10.5px;color:#5a6070;margin-top:2px;text-transform:uppercase;letter-spacing:0.08em">
-              {{ catLabel[selected.category] }}
-              <template v-if="selected.ducats"> · {{ selected.ducats }} Ducats</template>
-            </div>
-          </div>
-
-          <a :href="wikiUrl(selected)" target="_blank" rel="noopener" class="wiki-link">
-            {{ t.wikiLink }}
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
-                 stroke="currentColor" stroke-width="1.5">
-              <path d="M1 9L9 1M9 1H4M9 1V6"/>
-            </svg>
-          </a>
-        </div>
-
-        <!-- Sources -->
-        <div>
-          <div style="padding:10px 18px 6px;font-size:9px;font-weight:700;
-                      text-transform:uppercase;letter-spacing:0.12em;color:#2a3040">
-            {{ t.bestFarm }}
-          </div>
-
-          <div v-for="(src, i) in selected.sources" :key="i"
-               class="flex items-start gap-3"
-               :style="{
-                 padding: '12px 18px',
-                 borderTop: i > 0 ? '1px solid #0d0f14' : undefined,
-                 borderLeft: i === 0 ? '2px solid rgba(196,154,60,0.4)' : '2px solid transparent',
-               }">
-
-            <div class="shrink-0 flex items-center justify-center rounded-full"
-                 :style="{
-                   width:'22px', height:'22px', marginTop:'1px',
-                   fontSize:'10px', fontWeight:700,
-                   background: i === 0 ? 'rgba(196,154,60,0.12)' : '#111318',
-                   border: `1px solid ${i === 0 ? 'rgba(196,154,60,0.35)' : '#1c1f27'}`,
-                   color: i === 0 ? '#c49a3c' : '#3a4050',
-                 }">{{ src.rank }}</div>
-
+            <!-- Name + preview -->
             <div class="flex-1 min-w-0">
-              <div class="flex items-center flex-wrap gap-2">
-                <span style="font-size:13.5px;font-weight:500;color:#c8b890">{{ src.mission }}</span>
-                <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;
-                             padding:2px 6px;border-radius:3px;color:#5284e0;
-                             background:rgba(82,132,224,0.1);border:1px solid rgba(82,132,224,0.18)">
-                  {{ src.type }}
-                </span>
-                <!-- Planet chip -->
-                <span v-if="src.planet && PLANETS[src.planet]"
-                      class="inline-flex items-center gap-1.5"
-                      :style="{
-                        fontSize: '9.5px', fontWeight: 700, textTransform: 'uppercase',
-                        letterSpacing: '0.07em', padding: '2px 7px', borderRadius: '12px',
-                        color: PLANETS[src.planet].color,
-                        background: PLANETS[src.planet].color + '18',
-                        border: `1px solid ${PLANETS[src.planet].color}40`,
-                      }">
-                  <span :style="{
-                    width: '6px', height: '6px', borderRadius: '50%',
-                    background: PLANETS[src.planet].color,
-                    display: 'inline-block', flexShrink: 0,
-                  }"/>
-                  {{ PLANETS[src.planet].abbr }}
-                </span>
-                <span v-else style="font-size:11px;color:#3a4050">{{ src.planet }}</span>
+              <div class="text-[13.5px] font-medium leading-[1.3] transition-colors duration-100"
+                   :class="selected?.name === item.name ? 'text-[#d4c4a0]' : 'text-[#8a9090]'">
+                {{ item.name }}
               </div>
-              <div v-if="src.note" style="font-size:11.5px;color:#4a5060;margin-top:4px">{{ src.note }}</div>
+              <div class="text-[11px] text-[#252c38] mt-px truncate">
+                {{ bestSource(item) }}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </Transition>
 
-    <!-- Footer -->
-    <div class="mt-auto pt-10 pb-6 text-center" style="font-size:10.5px;color:#1e2530">
-      Made with ♥ by
-      <a href="https://tiltann.dev" target="_blank" rel="noopener" class="tiltann-link">Tiltann</a>
-      <span style="margin:0 6px">·</span>
-      Data: warframestat.us
-      <span style="margin:0 6px">·</span>
-      Not affiliated with Digital Extremes Ltd.
-      <span style="margin:0 6px">·</span>
-      {{ t.wip }}
+            <!-- Category label -->
+            <span class="shrink-0 text-[9px] font-bold uppercase tracking-[0.08em] opacity-70"
+                  :style="{ color: CATEGORY_COLOR[item.category] ?? '#3a4050' }">
+              {{ catLabel[item.category] }}
+            </span>
+
+            <!-- Chevron -->
+            <span class="text-[10px] text-[#252c38] shrink-0 leading-none
+                         transition-transform duration-200"
+                  :class="selected?.name === item.name ? 'rotate-180' : 'rotate-0'">▾</span>
+          </button>
+
+          <!-- Inline expansion -->
+          <Transition name="slide">
+            <div v-if="selected?.name === item.name"
+                 class="pr-3 pl-8 pt-3 pb-4 border-b border-b-[#0f1219] bg-black/[.12]">
+
+              <div class="text-[8.5px] font-bold uppercase tracking-[0.14em]
+                          text-[#252c38] mb-[10px]">
+                {{ t.bestFarm }}
+              </div>
+
+              <div v-for="(src, i) in item.sources" :key="i"
+                   :class="i > 0 ? 'mt-[10px] pt-[10px] border-t border-t-[#0d0f14]' : ''">
+
+                <div class="flex items-center flex-wrap gap-1.5">
+                  <!-- Rank badge -->
+                  <span class="flex items-center justify-center rounded-full shrink-0
+                               w-[18px] h-[18px] text-[9px] font-bold"
+                        :class="i === 0
+                          ? 'bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.3)] text-[#c49a3c]'
+                          : 'bg-[#0f1219] border border-[#1c1f27] text-[#3a4050]'">
+                    {{ src.rank }}
+                  </span>
+
+                  <!-- Mission name -->
+                  <span class="text-[13px] font-medium text-[#c8b890]">{{ src.mission }}</span>
+
+                  <!-- Type badge -->
+                  <span class="text-[8.5px] font-semibold uppercase tracking-[0.07em]
+                               px-[5px] py-[2px] rounded-[3px]
+                               text-[#5284e0] bg-[rgba(82,132,224,0.08)]
+                               border border-[rgba(82,132,224,0.15)]">
+                    {{ src.type }}
+                  </span>
+
+                  <!-- Planet chip -->
+                  <span v-if="src.planet && PLANETS[src.planet]"
+                        class="inline-flex items-center gap-1 text-[9px] font-bold uppercase
+                               tracking-[0.07em] px-[6px] py-[2px] rounded-[10px]"
+                        :style="{
+                          color: PLANETS[src.planet].color,
+                          background: PLANETS[src.planet].color + '15',
+                          border: `1px solid ${PLANETS[src.planet].color}35`,
+                        }">
+                    <span class="w-[5px] h-[5px] rounded-full shrink-0 inline-block"
+                          :style="{ background: PLANETS[src.planet].color }"/>
+                    {{ PLANETS[src.planet].abbr }}
+                  </span>
+                  <span v-else class="text-[11px] text-[#2e3848]">{{ src.planet }}</span>
+                </div>
+
+                <div v-if="src.note"
+                     class="text-[11px] text-[#3a4050] mt-1 pl-[22px] leading-[1.5]">
+                  {{ src.note }}
+                </div>
+              </div>
+
+              <!-- Wiki link -->
+              <a :href="wikiUrl(item)" target="_blank" rel="noopener"
+                 class="mt-3 inline-flex items-center gap-1
+                        text-[10px] font-bold uppercase tracking-[0.08em]
+                        text-[#3a4050] no-underline px-[9px] py-[5px] rounded
+                        border border-[#1c1f27]
+                        hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.35)]
+                        transition-colors duration-150">
+                {{ t.wikiLink }}
+                <svg width="9" height="9" viewBox="0 0 10 10" fill="none"
+                     stroke="currentColor" stroke-width="1.5">
+                  <path d="M1 9L9 1M9 1H4M9 1V6"/>
+                </svg>
+              </a>
+            </div>
+          </Transition>
+
+        </template>
+      </div>
+
+      <!-- Footer -->
+      <div class="pt-8 pb-6 text-[10px] text-[#1a2030] text-center">
+        Made with ♥ by
+        <a href="https://tiltann.dev" target="_blank" rel="noopener"
+           class="text-[#2a3040] no-underline hover:text-[#c49a3c] transition-colors duration-150">
+          Tiltann
+        </a>
+        <span class="mx-[5px]">·</span>
+        Data: warframestat.us
+        <span class="mx-[5px]">·</span>
+        Not affiliated with Digital Extremes Ltd.
+      </div>
+
     </div>
   </div>
 </template>

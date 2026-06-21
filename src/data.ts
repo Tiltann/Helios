@@ -1,4 +1,4 @@
-export type Category = 'resource' | 'prime' | 'warframe' | 'mod'
+export type Category = 'resource' | 'prime' | 'warframe' | 'mod' | 'relic'
 
 export interface Source {
   mission: string
@@ -43,12 +43,11 @@ export const PLANETS: Record<string, { color: string; abbr: string }> = {
   'Railjack':         { color: '#3c8cc4', abbr: 'RJK' },
 }
 
-const CDN = 'https://cdn.warframestat.us/img'
-
 export const ITEMS: Item[] = [
   // ── Resources ─────────────────────────────────────────────────────────────
+  // imageName used instead of image so the API imageMap is checked first
   {
-    name: 'Polymer Bundle', category: 'resource', image: `${CDN}/polymerBundle.png`,
+    name: 'Polymer Bundle', category: 'resource', imageName: 'polymerBundle.png',
     sources: [
       { mission: 'Ophelia', planet: 'Uranus',  type: 'Survival', note: 'Dark sector +105% resource drop', rank: 1 },
       { mission: 'Assur',   planet: 'Uranus',  type: 'Survival', rank: 2 },
@@ -56,7 +55,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Plastids', category: 'resource', image: `${CDN}/plastids.png`,
+    name: 'Plastids', category: 'resource', imageName: 'plastids.png',
     sources: [
       { mission: 'Ophelia',  planet: 'Uranus', type: 'Survival',             note: 'Dark sector +105% drop', rank: 1 },
       { mission: 'Memphis',  planet: 'Phobos', type: 'Survival',             rank: 2 },
@@ -64,7 +63,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Nano Spores', category: 'resource', image: `${CDN}/nanoSpores.png`,
+    name: 'Nano Spores', category: 'resource', imageName: 'nanoSpores.png',
     sources: [
       { mission: 'Gabii',    planet: 'Ceres',  type: 'Dark Sector Survival', note: 'Dark sector +105% drop', rank: 1 },
       { mission: 'Piscinas', planet: 'Saturn', type: 'Dark Sector Survival', rank: 2 },
@@ -72,7 +71,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Alloy Plate', category: 'resource', image: `${CDN}/alloyPlate.png`,
+    name: 'Alloy Plate', category: 'resource', imageName: 'alloyPlate.png',
     sources: [
       { mission: 'Romula',  planet: 'Venus',  type: 'Dark Sector Survival', note: 'Dark sector +105% drop', rank: 1 },
       { mission: 'Kadesh',  planet: 'Mars',   type: 'Defense',              rank: 2 },
@@ -80,7 +79,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Ferrite', category: 'resource', image: `${CDN}/ferrite.png`,
+    name: 'Ferrite', category: 'resource', imageName: 'ferrite.png',
     sources: [
       { mission: 'Apollodorus',    planet: 'Mercury',  type: 'Survival',   rank: 1 },
       { mission: 'Tikal',          planet: 'Earth',    type: 'Excavation', rank: 2 },
@@ -88,7 +87,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Rubedo', category: 'resource', image: `${CDN}/rubedo.png`,
+    name: 'Rubedo', category: 'resource', imageName: 'rubedo.png',
     sources: [
       { mission: 'Any mission', planet: 'Phobos', type: 'Any', note: 'Highest density planet', rank: 1 },
       { mission: 'Any mission', planet: 'Pluto',  type: 'Any', rank: 2 },
@@ -96,7 +95,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Neurodes', category: 'resource', image: `${CDN}/neurodes.png`,
+    name: 'Neurodes', category: 'resource', imageName: 'neurodes.png',
     sources: [
       { mission: 'Mot',   planet: 'Void', type: 'Survival',     rank: 1 },
       { mission: 'Viver', planet: 'Eris', type: 'Interception', rank: 2 },
@@ -104,7 +103,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Orokin Cell', category: 'resource', image: `${CDN}/orokinCell.png`,
+    name: 'Orokin Cell', category: 'resource', imageName: 'orokinCell.png',
     sources: [
       { mission: 'Tethys', planet: 'Saturn', type: 'Survival',             note: 'Sargas Ruk boss also drops it', rank: 1 },
       { mission: 'Gabii',  planet: 'Ceres',  type: 'Dark Sector Survival', rank: 2 },
@@ -112,29 +111,30 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Argon Crystal', category: 'resource', image: `${CDN}/argonCrystal.png`,
+    name: 'Argon Crystal', category: 'resource', imageName: 'argonCrystal.png',
     sources: [
       { mission: 'Mot',      planet: 'Void', type: 'Survival', note: 'Decays after 24 h — farm only when needed', rank: 1 },
-      { mission: 'Any node', planet: 'Void', type: 'Any',      rank: 2 },
+      { mission: 'Any node', planet: 'Void', type: 'Container Run', note: 'Container build: Limbo (max range Cataclysm) or Xaku (max range + negative str) + Loot Detector mod. Sweep the entire tileset in the rift — containers show on minimap and enemies can\'t harm you while you open them. Argon drops from Void lockers and breakable crates.', rank: 2 },
+      { mission: 'Any node', planet: 'Void', type: 'Any',      rank: 3 },
     ],
   },
   {
-    name: 'Control Module', category: 'resource', image: `${CDN}/controlModule.png`,
+    name: 'Control Module', category: 'resource', imageName: 'controlModule.png',
     sources: [
-      { mission: 'Any', planet: 'Void',    type: 'Any', rank: 1 },
+      { mission: 'Any', planet: 'Void',    type: 'Container Run', note: 'Container build (see Argon Crystal) also yields Control Modules — Limbo or Xaku with Loot Detector to sweep Void tilesets', rank: 1 },
       { mission: 'Any', planet: 'Neptune', type: 'Any', rank: 2 },
       { mission: 'Any', planet: 'Europa',  type: 'Any', rank: 3 },
     ],
   },
   {
-    name: 'Neural Sensors', category: 'resource', image: `${CDN}/neuralSensors.png`,
+    name: 'Neural Sensors', category: 'resource', imageName: 'neuralSensors.png',
     sources: [
       { mission: 'Themisto', planet: 'Jupiter', type: 'Boss', note: 'Alad V boss fight', rank: 1 },
       { mission: 'Any',      planet: 'Jupiter', type: 'Any',  rank: 2 },
     ],
   },
   {
-    name: 'Morphics', category: 'resource', image: `${CDN}/morphics.png`,
+    name: 'Morphics', category: 'resource', imageName: 'morphics.png',
     sources: [
       { mission: 'Any', planet: 'Mars',    type: 'Any', rank: 1 },
       { mission: 'Any', planet: 'Mercury', type: 'Any', rank: 2 },
@@ -142,7 +142,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Circuits', category: 'resource', image: `${CDN}/circuits.png`,
+    name: 'Circuits', category: 'resource', imageName: 'circuits.png',
     sources: [
       { mission: 'Cholistan', planet: 'Venus', type: 'Dark Sector Excavation', note: 'Dark sector +105% drop', rank: 1 },
       { mission: 'Hieracon',  planet: 'Pluto', type: 'Dark Sector Excavation', rank: 2 },
@@ -150,7 +150,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Salvage', category: 'resource', image: `${CDN}/salvage.png`,
+    name: 'Salvage', category: 'resource', imageName: 'salvage.png',
     sources: [
       { mission: 'Malva', planet: 'Venus',   type: 'Dark Sector Defense', note: 'Dark sector +105% drop', rank: 1 },
       { mission: 'Any',   planet: 'Jupiter', type: 'Any',                 rank: 2 },
@@ -158,7 +158,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Oxium', category: 'resource', image: `${CDN}/oxium.png`,
+    name: 'Oxium', category: 'resource', imageName: 'oxium.png',
     sources: [
       { mission: 'Galatea',    planet: 'Neptune', type: 'Mobile Defense', note: 'Kill Oxium Ospreys before they explode', rank: 1 },
       { mission: 'Cerberus',   planet: 'Pluto',   type: 'Defense',        rank: 2 },
@@ -166,46 +166,46 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Tellurium', category: 'resource', image: `${CDN}/tellurium.png`,
+    name: 'Tellurium', category: 'resource', imageName: 'tellurium.png',
     sources: [
       { mission: 'Archwing missions', planet: 'Any',     type: 'Archwing',              note: 'Exclusive to Archwing / Railjack', rank: 1 },
       { mission: 'Salacia',           planet: 'Neptune', type: 'Archwing Interception', rank: 2 },
     ],
   },
   {
-    name: 'Cryotic', category: 'resource', image: `${CDN}/cryotic.png`,
+    name: 'Cryotic', category: 'resource', imageName: 'cryotic.png',
     sources: [
-      { mission: 'Tikal',     planet: 'Earth', type: 'Excavation',             note: '100 Cryotic per completed excavator', rank: 1 },
-      { mission: 'Hieracon',  planet: 'Pluto', type: 'Dark Sector Excavation', note: 'Dark sector bonus + high enemy density', rank: 2 },
-      { mission: 'Carbice',   planet: 'Saturn',type: 'Excavation',             rank: 3 },
+      { mission: 'Tikal',    planet: 'Earth',  type: 'Excavation',             note: '100 Cryotic per completed excavator', rank: 1 },
+      { mission: 'Hieracon', planet: 'Pluto',  type: 'Dark Sector Excavation', note: 'Dark sector bonus + high enemy density', rank: 2 },
+      { mission: 'Carbice',  planet: 'Saturn', type: 'Excavation',             rank: 3 },
     ],
   },
   {
-    name: 'Kuva', category: 'resource', image: `${CDN}/kuva.png`,
+    name: 'Kuva', category: 'resource', imageName: 'kuva.png',
     sources: [
       { mission: 'Kuva Siphon / Flood', planet: 'Kuva Fortress', type: 'Special', note: 'Siphon ~700 Kuva, Flood ~1200 Kuva. Check alerts.', rank: 1 },
       { mission: 'Any node',            planet: 'Kuva Fortress', type: 'Any',     note: 'Baseline from all Kuva Fortress missions', rank: 2 },
     ],
   },
   {
-    name: 'Nitain Extract', category: 'resource', image: `${CDN}/nitainExtract.png`,
+    name: 'Nitain Extract', category: 'resource', imageName: 'nitainExtract.png',
     sources: [
       { mission: 'Nightwave Store', planet: 'Any', type: 'Vendor',    note: 'Buy with Nightwave Credits — most reliable source', rank: 1 },
       { mission: 'Resource Drones', planet: 'Any', type: 'Extractor', note: 'Deploy Extractors on Grineer planets', rank: 2 },
     ],
   },
   {
-    name: 'Vitus Essence', category: 'resource', image: `${CDN}/vitusEssence.png`,
+    name: 'Vitus Essence', category: 'resource', imageName: 'vitusEssence.png',
     sources: [
       { mission: 'Arbitrations', planet: 'Any', type: 'Arbitration', note: 'Drops from Arbitration drones and rotation rewards', rank: 1 },
     ],
   },
   {
-    name: 'Endo', category: 'resource', image: `${CDN}/endo.png`,
+    name: 'Endo', category: 'resource', imageName: 'endo.png',
     sources: [
-      { mission: 'Arbitrations', planet: 'Any',   type: 'Arbitration', note: 'Best Endo-per-hour source', rank: 1 },
-      { mission: 'Vodyanoi',     planet: 'Sedna', type: 'Arena',       note: 'Rathuum arena — high Endo from Executioner kills', rank: 2 },
-      { mission: 'Ayatan Sculptures', planet: 'Any', type: 'Decoration', note: 'Fill sculptures with stars, convert at Maroo\'s Bazaar', rank: 3 },
+      { mission: 'Arbitrations',      planet: 'Any',   type: 'Arbitration', note: 'Best Endo-per-hour source', rank: 1 },
+      { mission: 'Vodyanoi',          planet: 'Sedna', type: 'Arena',       note: 'Rathuum arena — high Endo from Executioner kills', rank: 2 },
+      { mission: 'Ayatan Sculptures', planet: 'Any',   type: 'Decoration',  note: 'Fill sculptures with stars, convert at Maroo\'s Bazaar', rank: 3 },
     ],
   },
 
@@ -386,105 +386,105 @@ export const ITEMS: Item[] = [
 
   // ── Mods ──────────────────────────────────────────────────────────────────
   {
-    name: 'Serration', category: 'mod', image: `${CDN}/serration.png`,
+    name: 'Serration', category: 'mod', imageName: 'serration.png',
     sources: [
       { mission: 'Any', planet: 'Any (Grineer / Infested)', type: 'Enemy Drop', note: 'Common drop — check your collection before farming', rank: 1 },
       { mission: 'Nightwave Store', planet: 'Any', type: 'Vendor', note: 'Occasionally available for Nightwave Credits', rank: 2 },
     ],
   },
   {
-    name: 'Hornet Strike', category: 'mod', image: `${CDN}/hornetStrike.png`,
+    name: 'Hornet Strike', category: 'mod', imageName: 'hornetStrike.png',
     sources: [
       { mission: 'Any', planet: 'Any (Corpus)', type: 'Enemy Drop', note: 'Common Corpus enemy drop', rank: 1 },
     ],
   },
   {
-    name: 'Split Chamber', category: 'mod', image: `${CDN}/splitChamber.png`,
+    name: 'Split Chamber', category: 'mod', imageName: 'splitChamber.png',
     sources: [
       { mission: 'Gabii',  planet: 'Ceres', type: 'Dark Sector Survival', note: 'Best place — high run volume = fast drops', rank: 1 },
       { mission: 'Any',    planet: 'Any',   type: 'Enemy Drop',           note: 'Uncommon enemy drop from any faction', rank: 2 },
     ],
   },
   {
-    name: 'Vitality', category: 'mod', image: `${CDN}/vitality.png`,
+    name: 'Vitality', category: 'mod', imageName: 'vitality.png',
     sources: [
       { mission: 'Any / Tutorial', planet: 'Any', type: 'Enemy Drop', note: 'Very common — almost certainly already in your collection', rank: 1 },
     ],
   },
   {
-    name: 'Redirection', category: 'mod', image: `${CDN}/redirection.png`,
+    name: 'Redirection', category: 'mod', imageName: 'redirection.png',
     sources: [
       { mission: 'Any', planet: 'Any (Corpus)', type: 'Enemy Drop', note: 'Very common Corpus drop', rank: 1 },
     ],
   },
   {
-    name: 'Steel Fiber', category: 'mod', image: `${CDN}/steelFiber.png`,
+    name: 'Steel Fiber', category: 'mod', imageName: 'steelFiber.png',
     sources: [
       { mission: 'Any', planet: 'Any (Grineer)', type: 'Enemy Drop', note: 'Common Grineer drop', rank: 1 },
     ],
   },
   {
-    name: 'Intensify', category: 'mod', image: `${CDN}/intensify.png`,
+    name: 'Intensify', category: 'mod', imageName: 'intensify.png',
     sources: [
       { mission: 'Any', planet: 'Any', type: 'Enemy Drop', note: 'Common enemy drop from all factions', rank: 1 },
     ],
   },
   {
-    name: 'Continuity', category: 'mod', image: `${CDN}/continuity.png`,
+    name: 'Continuity', category: 'mod', imageName: 'continuity.png',
     sources: [
       { mission: 'Any', planet: 'Any', type: 'Enemy Drop', note: 'Common enemy drop', rank: 1 },
     ],
   },
   {
-    name: 'Flow', category: 'mod', image: `${CDN}/flow.png`,
+    name: 'Flow', category: 'mod', imageName: 'flow.png',
     sources: [
       { mission: 'Any', planet: 'Any', type: 'Enemy Drop', note: 'Common enemy drop', rank: 1 },
     ],
   },
   {
-    name: 'Stretch', category: 'mod', image: `${CDN}/stretch.png`,
+    name: 'Stretch', category: 'mod', imageName: 'stretch.png',
     sources: [
       { mission: 'Any', planet: 'Any', type: 'Enemy Drop', note: 'Common enemy drop', rank: 1 },
     ],
   },
   {
-    name: 'Point Strike', category: 'mod', image: `${CDN}/pointStrike.png`,
+    name: 'Point Strike', category: 'mod', imageName: 'pointStrike.png',
     sources: [
       { mission: 'Any', planet: 'Any', type: 'Enemy Drop', note: 'Common drop — check collection first', rank: 1 },
     ],
   },
   {
-    name: 'Hunter Munitions', category: 'mod', image: `${CDN}/hunterMunitions.png`,
+    name: 'Hunter Munitions', category: 'mod', imageName: 'hunterMunitions.png',
     sources: [
       { mission: 'Plains of Eidolon Bounties', planet: 'Earth', type: 'Bounty', note: 'Any tier bounty rotation', rank: 1 },
     ],
   },
   {
-    name: 'Blind Rage', category: 'mod', image: `${CDN}/blindRage.png`,
+    name: 'Blind Rage', category: 'mod', imageName: 'blindRage.png',
     sources: [
       { mission: 'Orokin Vault', planet: 'Derelict', type: 'Corrupted Vault', note: 'Bring a Dragon Key — random corrupted mod on open', rank: 1 },
     ],
   },
   {
-    name: 'Narrow Minded', category: 'mod', image: `${CDN}/narrowMinded.png`,
+    name: 'Narrow Minded', category: 'mod', imageName: 'narrowMinded.png',
     sources: [
       { mission: 'Orokin Vault', planet: 'Derelict', type: 'Corrupted Vault', note: 'Bring a Dragon Key — random corrupted mod on open', rank: 1 },
     ],
   },
   {
-    name: 'Fleeting Expertise', category: 'mod', image: `${CDN}/fleetingExpertise.png`,
+    name: 'Fleeting Expertise', category: 'mod', imageName: 'fleetingExpertise.png',
     sources: [
       { mission: 'Orokin Vault', planet: 'Derelict', type: 'Corrupted Vault', note: 'Bring a Dragon Key — random corrupted mod on open', rank: 1 },
     ],
   },
   {
-    name: 'Transient Fortitude', category: 'mod', image: `${CDN}/transientFortitude.png`,
+    name: 'Transient Fortitude', category: 'mod', imageName: 'transientFortitude.png',
     sources: [
       { mission: 'Orokin Vault', planet: 'Derelict', type: 'Corrupted Vault', note: 'Bring a Dragon Key — random corrupted mod on open', rank: 1 },
     ],
   },
   {
-    name: 'Overextended', category: 'mod', image: `${CDN}/overextended.png`,
+    name: 'Overextended', category: 'mod', imageName: 'overextended.png',
     sources: [
       { mission: 'Orokin Vault', planet: 'Derelict', type: 'Corrupted Vault', note: 'Bring a Dragon Key — random corrupted mod on open', rank: 1 },
     ],
@@ -495,7 +495,7 @@ export const ITEMS: Item[] = [
     name: 'Rhino Prime', category: 'prime', ducats: 65, imageName: 'rhinoPrime.png',
     wikiSlug: 'Rhino/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relics — may require Axi or Neo tier', rank: 1 },
+      { mission: 'Axi A6 / Lith R4 / Meso C6 / Neo R4', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi A6 · Neuroptics: Lith R4 · Chassis: Meso C6 · Systems: Neo R4', rank: 1 },
       { mission: "Baro Ki'Teer", planet: 'Any Relay', type: 'Vendor', note: 'Sold during Prime Resurgence events', rank: 2 },
     ],
   },
@@ -503,7 +503,7 @@ export const ITEMS: Item[] = [
     name: 'Saryn Prime', category: 'prime', ducats: 100, imageName: 'sarynPrime.png',
     wikiSlug: 'Saryn/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relics — may require Axi or Neo tier', rank: 1 },
+      { mission: 'Axi S3 / Lith S9 / Meso S4 / Neo S5', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi S3 · Neuroptics: Meso S4 · Chassis: Lith S9 · Systems: Neo S5', rank: 1 },
       { mission: "Baro Ki'Teer", planet: 'Any Relay', type: 'Vendor', note: 'Sold during Prime Resurgence events', rank: 2 },
     ],
   },
@@ -511,35 +511,229 @@ export const ITEMS: Item[] = [
     name: 'Mesa Prime', category: 'prime', ducats: 100, imageName: 'mesaPrime.png',
     wikiSlug: 'Mesa/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relics — Axi/Neo tier typically', rank: 1 },
+      { mission: 'Axi M2 / Lith M7 / Meso M3 / Neo M4', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi M2 · Neuroptics: Lith M7 · Chassis: Meso M3 · Systems: Neo M4', rank: 1 },
     ],
   },
   {
     name: 'Nova Prime', category: 'prime', ducats: 65, imageName: 'novaPrime.png',
     wikiSlug: 'Nova/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relic list', rank: 1 },
+      { mission: 'Axi N5 / Lith N5 / Meso N6 / Neo N10', planet: 'Void', type: 'Void Fissure', note: 'Check wiki for current relic list — may be vaulted', rank: 1 },
     ],
   },
   {
     name: 'Trinity Prime', category: 'prime', ducats: 65, imageName: 'trinityPrime.png',
     wikiSlug: 'Trinity/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
+      { mission: 'Void Fissure', planet: 'Void', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
     ],
   },
   {
     name: 'Loki Prime', category: 'prime', ducats: 65, imageName: 'lokiPrime.png',
     wikiSlug: 'Loki/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
+      { mission: 'Void Fissure', planet: 'Void', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
     ],
   },
   {
     name: 'Volt Prime', category: 'prime', ducats: 45, imageName: 'voltPrime.png',
     wikiSlug: 'Volt/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
+      { mission: 'Void Fissure', planet: 'Void', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
     ],
+  },
+
+  // ── Relics ────────────────────────────────────────────────────────────────
+  // Best spots: Lith → Hepit (Void Capture) | Meso → Io (Jupiter Defense)
+  //             Neo  → Hydron (Sedna Defense) | Axi → Mot (Void Survival)
+
+  // Rhino Prime relics
+  {
+    name: 'Axi A6 Relic', category: 'relic', imageName: 'relicAxi.png',
+    sources: [{
+      mission: 'Mot (Survival) / Xini (Interception)',
+      planet: 'Void',
+      type: 'Axi Fissure',
+      note: 'Rare: Rhino Prime Blueprint · Unc: Nyx Prime Neuroptics, Ankyros Prime Gauntlet · Com: Soma Prime Barrel, Paris Prime Upper Limb, Boltor Prime Receiver',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Lith R4 Relic', category: 'relic', imageName: 'relicLith.png',
+    sources: [{
+      mission: 'Hepit (Capture)',
+      planet: 'Void',
+      type: 'Lith Fissure',
+      note: 'Rare: Rhino Prime Neuroptics · Unc: Bronco Prime Receiver, Hikou Prime Pouch · Com: Ankyros Prime Guard, Paris Prime Lower Limb, Boar Prime Blueprint',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Meso C6 Relic', category: 'relic', imageName: 'relicMeso.png',
+    sources: [{
+      mission: 'Io (Defense)',
+      planet: 'Jupiter',
+      type: 'Meso Fissure',
+      note: 'Rare: Rhino Prime Chassis · Unc: Orthos Prime Handle, Fang Prime Handle · Com: Nyx Prime Chassis, Paris Prime Grip, Boar Prime Receiver',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Neo R4 Relic', category: 'relic', imageName: 'relicNeo.png',
+    sources: [{
+      mission: 'Hydron (Defense)',
+      planet: 'Sedna',
+      type: 'Neo Fissure',
+      note: 'Rare: Rhino Prime Systems · Unc: Soma Prime Stock, Braton Prime Receiver · Com: Ankyros Prime Guard, Boar Prime Receiver, Boltor Prime Receiver',
+      rank: 1,
+    }],
+  },
+
+  // Saryn Prime relics
+  {
+    name: 'Axi S3 Relic', category: 'relic', imageName: 'relicAxi.png',
+    sources: [{
+      mission: 'Mot (Survival) / Xini (Interception)',
+      planet: 'Void',
+      type: 'Axi Fissure',
+      note: 'Rare: Saryn Prime Blueprint · Unc: Cernos Prime Grip, Nikana Prime Blade · Com: Kogake Prime Gauntlet, Spira Prime Pouch, Vectis Prime Barrel',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Lith S9 Relic', category: 'relic', imageName: 'relicLith.png',
+    sources: [{
+      mission: 'Hepit (Capture)',
+      planet: 'Void',
+      type: 'Lith Fissure',
+      note: 'Rare: Saryn Prime Chassis · Unc: Cernos Prime Lower Limb, Nikana Prime Handle · Com: Kogake Prime Blueprint, Spira Prime Blueprint, Vectis Prime Stock',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Meso S4 Relic', category: 'relic', imageName: 'relicMeso.png',
+    sources: [{
+      mission: 'Io (Defense)',
+      planet: 'Jupiter',
+      type: 'Meso Fissure',
+      note: 'Rare: Saryn Prime Neuroptics · Unc: Nikana Prime Blueprint, Cernos Prime String · Com: Kogake Prime Guard, Spira Prime Pouch, Vectis Prime Receiver',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Neo S5 Relic', category: 'relic', imageName: 'relicNeo.png',
+    sources: [{
+      mission: 'Hydron (Defense)',
+      planet: 'Sedna',
+      type: 'Neo Fissure',
+      note: 'Rare: Saryn Prime Systems · Unc: Nikana Prime Handle, Cernos Prime Upper Limb · Com: Kogake Prime Gauntlet, Spira Prime Blade, Vectis Prime Barrel',
+      rank: 1,
+    }],
+  },
+
+  // Mesa Prime relics
+  {
+    name: 'Axi M2 Relic', category: 'relic', imageName: 'relicAxi.png',
+    sources: [{
+      mission: 'Mot (Survival) / Xini (Interception)',
+      planet: 'Void',
+      type: 'Axi Fissure',
+      note: 'Rare: Mesa Prime Blueprint · Unc: Akjagara Prime Link, Redeemer Prime Blade · Com: Akjagara Prime Barrel, Redeemer Prime Handle, Akjagara Prime Blueprint',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Lith M7 Relic', category: 'relic', imageName: 'relicLith.png',
+    sources: [{
+      mission: 'Hepit (Capture)',
+      planet: 'Void',
+      type: 'Lith Fissure',
+      note: 'Rare: Mesa Prime Neuroptics · Unc: Redeemer Prime Blueprint, Akjagara Prime Blueprint · Com: Akjagara Prime Barrel, Redeemer Prime Handle, Akjagara Prime Link',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Meso M3 Relic', category: 'relic', imageName: 'relicMeso.png',
+    sources: [{
+      mission: 'Io (Defense)',
+      planet: 'Jupiter',
+      type: 'Meso Fissure',
+      note: 'Rare: Mesa Prime Chassis · Unc: Akjagara Prime Link, Redeemer Prime Blade · Com: Akjagara Prime Barrel, Redeemer Prime Handle, Akjagara Prime Blueprint',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Neo M4 Relic', category: 'relic', imageName: 'relicNeo.png',
+    sources: [{
+      mission: 'Hydron (Defense)',
+      planet: 'Sedna',
+      type: 'Neo Fissure',
+      note: 'Rare: Mesa Prime Systems · Unc: Akjagara Prime Link, Redeemer Prime Blueprint · Com: Akjagara Prime Barrel, Redeemer Prime Handle, Redeemer Prime Blade',
+      rank: 1,
+    }],
+  },
+
+  // Ash Prime relics
+  {
+    name: 'Axi A4 Relic', category: 'relic', imageName: 'relicAxi.png',
+    sources: [{
+      mission: 'Mot (Survival) / Xini (Interception)',
+      planet: 'Void',
+      type: 'Axi Fissure',
+      note: 'Rare: Ash Prime Blueprint · Unc: Paris Prime Upper Limb, Soma Prime Barrel · Com: Boltor Prime Stock, Braton Prime Barrel, Latron Prime Barrel',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Neo A1 Relic', category: 'relic', imageName: 'relicNeo.png',
+    sources: [{
+      mission: 'Hydron (Defense)',
+      planet: 'Sedna',
+      type: 'Neo Fissure',
+      note: 'Rare: Ash Prime Neuroptics · Unc: Vasto Prime Barrel, Orthos Prime Handle · Com: Braton Prime Blueprint, Latron Prime Receiver, Paris Prime Grip',
+      rank: 1,
+    }],
+  },
+
+  // Gauss Prime relics (unvaulted as of recent updates)
+  {
+    name: 'Axi G5 Relic', category: 'relic', imageName: 'relicAxi.png',
+    sources: [{
+      mission: 'Mot (Survival) / Xini (Interception)',
+      planet: 'Void',
+      type: 'Axi Fissure',
+      note: 'Rare: Gauss Prime Blueprint · Unc: Stahlta Prime Barrel, Acceltra Prime Barrel · Com: Stahlta Prime Stock, Acceltra Prime Blueprint, Stahlta Prime Blueprint',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Meso G4 Relic', category: 'relic', imageName: 'relicMeso.png',
+    sources: [{
+      mission: 'Io (Defense)',
+      planet: 'Jupiter',
+      type: 'Meso Fissure',
+      note: 'Rare: Gauss Prime Chassis · Unc: Acceltra Prime Receiver, Stahlta Prime Receiver · Com: Acceltra Prime Blueprint, Stahlta Prime Blueprint, Acceltra Prime Stock',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Neo G3 Relic', category: 'relic', imageName: 'relicNeo.png',
+    sources: [{
+      mission: 'Hydron (Defense)',
+      planet: 'Sedna',
+      type: 'Neo Fissure',
+      note: 'Rare: Gauss Prime Systems · Unc: Acceltra Prime Stock, Stahlta Prime Stock · Com: Acceltra Prime Receiver, Stahlta Prime Barrel, Acceltra Prime Barrel',
+      rank: 1,
+    }],
+  },
+  {
+    name: 'Lith G6 Relic', category: 'relic', imageName: 'relicLith.png',
+    sources: [{
+      mission: 'Hepit (Capture)',
+      planet: 'Void',
+      type: 'Lith Fissure',
+      note: 'Rare: Gauss Prime Neuroptics · Unc: Stahlta Prime Receiver, Acceltra Prime Barrel · Com: Acceltra Prime Blueprint, Stahlta Prime Blueprint, Stahlta Prime Barrel',
+      rank: 1,
+    }],
   },
 ]
