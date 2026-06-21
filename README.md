@@ -32,7 +32,7 @@ Item images are fetched at runtime from [warframestat.us](https://warframestat.u
 **Prerequisites:** Node.js 18+, npm
 
 ```bash
-git clone https://github.com/Appercy/Helios.git
+git clone https://github.com/Tiltann/Helios.git
 cd Helios
 npm install
 npm run dev
