@@ -99,18 +99,30 @@ function spaceToFocus(e: KeyboardEvent) {
 }
 
 function wikiUrl(item: Item): string {
-  return `https://wiki.warframe.com/wiki/${(item.wikiSlug ?? item.name).replace(/ /g, '_')}`
+  return `https://wiki.warframe.com/w/${(item.wikiSlug ?? item.name).replace(/ /g, '_')}`
+}
+
+const RELIC_TIER_IMAGE: Record<string, string> = {
+  Axi:  'RelicAxiD.png',
+  Lith: 'RelicLithD.png',
+  Meso: 'RelicMesoD.png',
+  Neo:  'RelicNeoD.png',
 }
 
 function getImage(item: Item): string {
-  return item.image
-    || imageMap.value[item.name]
+  if (item.image) return item.image
+  if (item.category === 'relic') {
+    const tier = item.name.split(' ')[0]
+    if (RELIC_TIER_IMAGE[tier])
+      return `https://cdn.warframestat.us/img/${RELIC_TIER_IMAGE[tier]}`
+  }
+  return imageMap.value[item.name]
     || (item.imageName ? `https://cdn.warframestat.us/img/${item.imageName}` : '')
 }
 
 function bestSource(item: Item): string {
   const s = item.sources[0]
-  return s ? [s.mission, s.planet, s.type].filter(Boolean).join(' · ') : ''
+  return s ? [s.mission, s.planet, s.type].filter(Boolean).join(', ') : ''
 }
 
 function termParts(key: TKey): { label: string; body: string } {
@@ -147,7 +159,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
   <div class="min-h-screen bg-[#07090f] text-[#d4c4a0] font-sans antialiased">
 
     <!-- Beginner modal -->
-    <Transition name="fade">
+    <Transition name="zoom">
       <div v-if="beginnerModal"
            class="fixed inset-0 z-50 flex items-center justify-center p-4
                   bg-[rgba(7,9,15,0.92)] backdrop-blur-[4px]"
@@ -158,11 +170,11 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
           <div class="flex items-center justify-between px-5 py-4 border-b border-b-[#14171e]">
             <div>
               <div class="text-[13px] font-bold text-[#c49a3c]">{{ t.beginnerTitle }}</div>
-              <div class="text-[11px] text-[#3a4050] mt-[2px]">{{ t.beginnerIntro }}</div>
+              <div class="text-[11px] text-[#7a8aa0] mt-[2px]">{{ t.beginnerIntro }}</div>
             </div>
             <button @click="beginnerModal = false"
                     class="bg-transparent border-none cursor-pointer text-[24px] leading-none
-                           px-[10px] py-1 text-[#3a4050] shrink-0
+                           px-[10px] py-1 text-[#5a6a88] shrink-0
                            hover:text-[#c49a3c] transition-colors duration-150">×</button>
           </div>
 
@@ -173,14 +185,14 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
               <div class="text-[9px] font-bold uppercase tracking-[0.12em] text-[#c49a3c] mb-1">
                 {{ termParts(key).label }}
               </div>
-              <div class="text-[11px] text-[#4a5568] leading-[1.6]">
+              <div class="text-[11px] text-[#8a9ab0] leading-[1.6]">
                 {{ termParts(key).body }}
               </div>
             </div>
           </div>
 
           <div class="px-5 py-[10px] border-t border-t-[#14171e]">
-            <span class="text-[10px] text-[#272e3a] italic">{{ t.darkSectorNote }}</span>
+            <span class="text-[10px] text-[#5a6a80] italic">{{ t.darkSectorNote }}</span>
           </div>
         </div>
       </div>
@@ -194,13 +206,13 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
         <div class="flex items-center gap-2.5">
           <img src="/logo.svg" alt="Helios" class="w-6 h-6"/>
           <span class="text-[11px] font-bold tracking-[0.22em] uppercase text-[#c49a3c]">HELIOS</span>
-          <span class="text-[11px] text-[#252c38] ml-1.5 tracking-[0.04em]">{{ t.subtitle }}</span>
+          <span class="text-[11px] text-[#4a5870] ml-1.5 tracking-[0.04em]">{{ t.subtitle }}</span>
         </div>
         <div class="flex items-center gap-2">
           <button @click="beginnerModal = true"
                   class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
                          rounded cursor-pointer transition-all duration-150
-                         text-[#3a4050] bg-transparent border border-[#1c1f27]
+                         text-[#5a6a88] bg-transparent border border-[#1c1f27]
                          hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.3)]">
             {{ t.beginnerMode }}
           </button>
@@ -217,7 +229,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
 
       <!-- Search box -->
       <div class="relative mb-[14px]">
-        <div class="rounded-[8px] bg-[#0b0d12] transition-all duration-150"
+        <div class="rounded-[8px] bg-[#0b0d12] transition-all duration-200"
              :class="query
                ? 'border border-[rgba(196,154,60,0.27)] shadow-[0_0_0_3px_rgba(196,154,60,0.04)]'
                : 'border border-[#1c1f27]'">
@@ -230,11 +242,11 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                  :placeholder="t.placeholder"
                  class="w-full bg-transparent border-none outline-none
                         px-10 py-[13px] text-[14.5px] text-[#c8b890]
-                        placeholder:text-[#2e3848]"/>
+                        placeholder:text-[#3a4860]"/>
           <button v-if="query" @click="query='';search()"
                   class="absolute right-3 top-1/2 -translate-y-1/2
                          border-none bg-transparent cursor-pointer
-                         text-[#2e3848] text-[18px] leading-none px-1.5 py-1
+                         text-[#5a6a88] text-[18px] leading-none px-1.5 py-1
                          hover:text-[#c49a3c] transition-colors duration-100">×</button>
         </div>
       </div>
@@ -245,13 +257,13 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                 @click="activeCategory = cat === 'all' ? null : cat"
                 class="text-[9.5px] font-bold uppercase tracking-[0.1em]
                        px-[11px] py-1 rounded-full cursor-pointer
-                       transition-all duration-150 leading-[1.4]"
+                       transition-all duration-200 leading-[1.4]"
                 :style="isActiveTab(cat) ? {
                   color: '#07090f',
                   background: CATEGORY_COLOR[cat] ?? '#c49a3c',
                   border: '1px solid transparent',
                 } : {
-                  color: cat === 'all' ? '#3a4050' : (CATEGORY_COLOR[cat] ?? '#3a4050'),
+                  color: cat === 'all' ? '#5a6a88' : (CATEGORY_COLOR[cat] ?? '#5a6a88'),
                   background: 'transparent',
                   border: '1px solid #1c1f27',
                 }">
@@ -262,7 +274,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
       <!-- No results -->
       <Transition name="fade">
         <p v-if="query && !displayItems.length"
-           class="text-[12px] text-[#2e3848] py-2">
+           class="text-[12px] text-[#5a6a88] py-2">
           {{ t.noResults }}
         </p>
       </Transition>
@@ -274,8 +286,10 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
           <button @click="pick(item)"
                   class="w-full text-left border-none cursor-pointer
                          flex items-center gap-3 pl-[10px] py-[10px]
-                         border-b border-b-[#0f1219] transition-colors duration-100"
-                  :class="selected?.name === item.name ? 'bg-[rgba(196,154,60,0.03)]' : 'bg-transparent'"
+                         border-b border-b-[#0f1219] transition-colors duration-150"
+                  :class="selected?.name === item.name
+                    ? 'bg-[rgba(196,154,60,0.04)]'
+                    : 'bg-transparent hover:bg-white/[.018]'"
                   :style="{ borderLeft: selected?.name === item.name ? '2px solid #c49a3c' : '2px solid transparent' }">
 
             <!-- Image with dot fallback -->
@@ -291,25 +305,25 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
 
             <!-- Name + preview -->
             <div class="flex-1 min-w-0">
-              <div class="text-[13.5px] font-medium leading-[1.3] transition-colors duration-100"
-                   :class="selected?.name === item.name ? 'text-[#d4c4a0]' : 'text-[#8a9090]'">
+              <div class="text-[13.5px] font-medium leading-[1.3] transition-colors duration-150"
+                   :class="selected?.name === item.name ? 'text-[#d4c4a0]' : 'text-[#a8b6b6]'">
                 {{ item.name }}
               </div>
-              <div class="text-[11px] text-[#252c38] mt-px truncate">
+              <div class="text-[11px] text-[#4a5870] mt-px truncate">
                 {{ bestSource(item) }}
               </div>
             </div>
 
             <!-- Category label -->
-            <span class="shrink-0 text-[9px] font-bold uppercase tracking-[0.08em] opacity-70"
-                  :style="{ color: CATEGORY_COLOR[item.category] ?? '#3a4050' }">
+            <span class="shrink-0 text-[9px] font-bold uppercase tracking-[0.08em]"
+                  :style="{ color: CATEGORY_COLOR[item.category] ?? '#5a6a88' }">
               {{ catLabel[item.category] }}
             </span>
 
             <!-- Chevron -->
-            <span class="text-[10px] text-[#252c38] shrink-0 leading-none
-                         transition-transform duration-200"
-                  :class="selected?.name === item.name ? 'rotate-180' : 'rotate-0'">▾</span>
+            <span class="text-[10px] text-[#4a5870] shrink-0 leading-none"
+                  :class="selected?.name === item.name ? 'rotate-180' : 'rotate-0'"
+                  :style="{ transition: 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1)' }">▾</span>
           </button>
 
           <!-- Inline expansion -->
@@ -318,7 +332,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                  class="pr-3 pl-8 pt-3 pb-4 border-b border-b-[#0f1219] bg-black/[.12]">
 
               <div class="text-[8.5px] font-bold uppercase tracking-[0.14em]
-                          text-[#252c38] mb-[10px]">
+                          text-[#4a5870] mb-[10px]">
                 {{ t.bestFarm }}
               </div>
 
@@ -331,7 +345,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                                w-[18px] h-[18px] text-[9px] font-bold"
                         :class="i === 0
                           ? 'bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.3)] text-[#c49a3c]'
-                          : 'bg-[#0f1219] border border-[#1c1f27] text-[#3a4050]'">
+                          : 'bg-[#0f1219] border border-[#1c1f27] text-[#5a6a88]'">
                     {{ src.rank }}
                   </span>
 
@@ -357,13 +371,13 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                         }">
                     <span class="w-[5px] h-[5px] rounded-full shrink-0 inline-block"
                           :style="{ background: PLANETS[src.planet].color }"/>
-                    {{ PLANETS[src.planet].abbr }}
+                    {{ src.planet }}
                   </span>
-                  <span v-else class="text-[11px] text-[#2e3848]">{{ src.planet }}</span>
+                  <span v-else class="text-[11px] text-[#5a6a88]">{{ src.planet }}</span>
                 </div>
 
                 <div v-if="src.note"
-                     class="text-[11px] text-[#3a4050] mt-1 pl-[22px] leading-[1.5]">
+                     class="text-[11px] text-[#7a8aa0] mt-1 pl-[22px] leading-[1.6]">
                   {{ src.note }}
                 </div>
               </div>
@@ -372,7 +386,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
               <a :href="wikiUrl(item)" target="_blank" rel="noopener"
                  class="mt-3 inline-flex items-center gap-1
                         text-[10px] font-bold uppercase tracking-[0.08em]
-                        text-[#3a4050] no-underline px-[9px] py-[5px] rounded
+                        text-[#5a6a88] no-underline px-[9px] py-[5px] rounded
                         border border-[#1c1f27]
                         hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.35)]
                         transition-colors duration-150">
@@ -389,15 +403,15 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
       </div>
 
       <!-- Footer -->
-      <div class="pt-8 pb-6 text-[10px] text-[#1a2030] text-center">
+      <div class="pt-8 pb-6 text-[10px] text-[#3a4860] text-center">
         Made with ♥ by
         <a href="https://tiltann.dev" target="_blank" rel="noopener"
-           class="text-[#2a3040] no-underline hover:text-[#c49a3c] transition-colors duration-150">
+           class="text-[#5a6a88] no-underline hover:text-[#c49a3c] transition-colors duration-150">
           Tiltann
         </a>
-        <span class="mx-[5px]">·</span>
+        <span class="mx-[5px] opacity-40">|</span>
         Data: warframestat.us
-        <span class="mx-[5px]">·</span>
+        <span class="mx-[5px] opacity-40">|</span>
         Not affiliated with Digital Extremes Ltd.
       </div>
 

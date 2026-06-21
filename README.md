@@ -1,35 +1,30 @@
-# Helios — Warframe Farm Guide
+# Helios
 
-> Fast, searchable farming guide for Warframe. Find where to farm any resource, Warframe, mod, or Prime part — in your language.
+A fast farming guide for Warframe. Type what you need, see where to get it.
 
 Live at **[helios.tiltann.dev](https://helios.tiltann.dev)**
 
-## Features
+## What it does
 
-- Fuzzy search across 60+ items (Fuse.js)
-- Browse by category — Resources, Warframes, Mods, Prime
-- Ranked farming sources with planet chips and mission type badges
-- Beginner's Guide modal explaining Warframe terminology
-- Color-coded planet indicators in source cards
-- Fully static — no backend, no account, no tracking
-- 10 languages: EN, DE, FR, ES, IT, PL, PT, RU, KO, ZH (auto-detected from browser)
-- Keyboard navigable: arrow keys, Space to focus search, Escape to clear
+Search any resource, warframe, mod, relic or prime part and get ranked farm locations with planet chips, mission types and tips. Includes a beginner glossary for players new to the game's terminology. Works in 10 languages and auto-detects your browser's locale.
 
-## Tech Stack
+No backend, no account, no tracking. Just a static page.
 
-| Tool | Purpose |
+## Stack
+
+| | |
 |---|---|
-| Vue 3 (Composition API) | UI framework, single-file component |
-| TypeScript | Type safety |
-| Vite 8 | Build tool and dev server |
-| Tailwind CSS v4 | Utility-class styling |
+| Vue 3 | UI |
+| TypeScript | Types |
+| Vite 8 | Build |
+| Tailwind CSS v4 | Styling |
 | Fuse.js | Fuzzy search |
 
-Item images are fetched at runtime from [warframestat.us](https://warframestat.us/) — no backend required.
+Images pulled at runtime from [warframestat.us](https://warframestat.us/).
 
-## Getting Started
+## Running locally
 
-**Prerequisites:** Node.js 18+, npm
+Requires Node.js 18+.
 
 ```bash
 git clone https://github.com/Tiltann/Helios.git
@@ -38,47 +33,41 @@ npm install
 npm run dev
 ```
 
-The dev server starts at `http://localhost:5173`.
+Opens at `http://localhost:5173`.
 
-## Build
+## Building
 
 ```bash
 npm run build
 ```
 
-Output goes to `dist/`. Preview locally with `npm run preview`.
+Output lands in `dist/`. Use `npm run preview` to serve it locally.
 
-## Deployment
+## Deploying your own fork
 
-The app deploys automatically to [helios.tiltann.dev](https://helios.tiltann.dev) via GitHub Actions on every push to `master`. The workflow builds the app and pushes `dist/` to the `gh-pages` branch.
+Pushes to `master` deploy automatically via GitHub Actions to `gh-pages`. To set up your own:
 
-**To deploy your own fork:**
-1. Enable GitHub Pages in repo Settings → Pages → Source: `gh-pages` branch
-2. Add a CNAME record in your DNS: `helios` → `<your-username>.github.io`
+1. Go to repo Settings, Pages, set source to the `gh-pages` branch
+2. Add a CNAME record pointing to `<your-username>.github.io`
 3. Update `public/CNAME` with your domain
-4. Push to `master` — the Actions workflow handles the rest
 
-## Contributing
+## Adding items
 
-Data corrections and new items are welcome. Edit `src/data.ts` — each item follows this shape:
+All data lives in `src/data.ts`. Each item looks like this:
 
 ```typescript
 {
   name: 'Item Name',
-  category: 'resource' | 'warframe' | 'mod' | 'prime',
-  imageName: 'itemName.png',   // CDN filename from warframestat.us
+  category: 'resource' | 'warframe' | 'mod' | 'prime' | 'relic',
+  imageName: 'itemName.png',
   sources: [
     { mission: 'Mission', planet: 'Planet', type: 'Type', note: 'Optional tip', rank: 1 },
   ],
 }
 ```
 
-Open a PR with your changes. Verify the app runs with `npm run dev` before submitting.
+Open a PR with your changes. Run `npm run dev` first to make sure nothing's broken.
 
 ## License
 
-MIT
-
----
-
-*Not affiliated with Digital Extremes Ltd. Warframe is a trademark of Digital Extremes.*
+MIT. Not affiliated with Digital Extremes Ltd.
