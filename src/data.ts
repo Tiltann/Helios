@@ -12,9 +12,35 @@ export interface Item {
   name: string
   category: Category
   image?: string
+  imageName?: string
   ducats?: number
   sources: Source[]
   wikiSlug?: string
+}
+
+export const PLANETS: Record<string, { color: string; abbr: string }> = {
+  'Earth':            { color: '#4a8c3c', abbr: 'ETH' },
+  'Venus':            { color: '#c4a23c', abbr: 'VEN' },
+  'Mercury':          { color: '#8c7c5c', abbr: 'MER' },
+  'Mars':             { color: '#c44c3c', abbr: 'MRS' },
+  'Phobos':           { color: '#8c5c3c', abbr: 'PHB' },
+  'Ceres':            { color: '#9c7c5c', abbr: 'CRS' },
+  'Jupiter':          { color: '#c4943c', abbr: 'JUP' },
+  'Europa':           { color: '#5c8ca4', abbr: 'EUR' },
+  'Saturn':           { color: '#c4b45c', abbr: 'SAT' },
+  'Uranus':           { color: '#5cc4b4', abbr: 'URA' },
+  'Neptune':          { color: '#3c6cc4', abbr: 'NEP' },
+  'Pluto':            { color: '#7c6c8c', abbr: 'PLU' },
+  'Sedna':            { color: '#c43c5c', abbr: 'SED' },
+  'Eris':             { color: '#8c3c6c', abbr: 'ERS' },
+  'Lua':              { color: '#d4c4a0', abbr: 'LUA' },
+  'Void':             { color: '#8c5cc4', abbr: 'VOD' },
+  'Kuva Fortress':    { color: '#c43c3c', abbr: 'KUV' },
+  'Deimos':           { color: '#9c5c3c', abbr: 'DMO' },
+  'Derelict':         { color: '#5c6c4c', abbr: 'DER' },
+  'Zariman Ten Zero': { color: '#a4a4d4', abbr: 'ZAR' },
+  'Orb Vallis':       { color: '#c4a23c', abbr: 'OV'  },
+  'Railjack':         { color: '#3c8cc4', abbr: 'RJK' },
 }
 
 const CDN = 'https://cdn.warframestat.us/img'
@@ -185,56 +211,56 @@ export const ITEMS: Item[] = [
 
   // ── Warframes ─────────────────────────────────────────────────────────────
   {
-    name: 'Ash', category: 'warframe',
+    name: 'Ash', category: 'warframe', imageName: 'ash.png',
     sources: [
       { mission: 'Uranus missions', planet: 'Uranus', type: 'Survival / Defense', note: 'Parts drop from Grineer Manic spawns — higher level = more spawns', rank: 1 },
     ],
   },
   {
-    name: 'Baruuk', category: 'warframe',
+    name: 'Baruuk', category: 'warframe', imageName: 'baruuk.png',
     sources: [
       { mission: 'Little Duck (Fortuna)', planet: 'Venus', type: 'Vendor', note: 'Requires Vox Solaris rank — buy parts with standing', rank: 1 },
     ],
   },
   {
-    name: 'Ember', category: 'warframe',
+    name: 'Ember', category: 'warframe', imageName: 'ember.png',
     sources: [
       { mission: 'Tethys', planet: 'Saturn', type: 'Boss', note: 'General Sargas Ruk boss fight', rank: 1 },
     ],
   },
   {
-    name: 'Equinox', category: 'warframe',
+    name: 'Equinox', category: 'warframe', imageName: 'equinox.png',
     sources: [
       { mission: 'Tyl Regor', planet: 'Uranus', type: 'Boss', note: '8 parts total — Day & Night forms each drop 4', rank: 1 },
     ],
   },
   {
-    name: 'Frost', category: 'warframe',
+    name: 'Frost', category: 'warframe', imageName: 'frost.png',
     sources: [
       { mission: 'War',  planet: 'Mars',  type: 'Boss', note: 'Lt. Lech Kril — recommended solo', rank: 1 },
       { mission: 'Exta', planet: 'Ceres', type: 'Boss', note: 'Lt. Lech Kril & Vor co-op (requires two players)', rank: 2 },
     ],
   },
   {
-    name: 'Gara', category: 'warframe',
+    name: 'Gara', category: 'warframe', imageName: 'gara.png',
     sources: [
       { mission: "Saya's Vigil", planet: 'Earth / Plains', type: 'Quest + Bounties', note: 'Parts from Cetus bounties after quest completion', rank: 1 },
     ],
   },
   {
-    name: 'Garuda', category: 'warframe',
+    name: 'Garuda', category: 'warframe', imageName: 'garuda.png',
     sources: [
       { mission: 'Orb Vallis Bounties', planet: 'Venus', type: 'Bounty', note: 'Tier 3–5 bounties from Eudico in Fortuna', rank: 1 },
     ],
   },
   {
-    name: 'Gauss', category: 'warframe',
+    name: 'Gauss', category: 'warframe', imageName: 'gauss.png',
     sources: [
       { mission: 'Kappa', planet: 'Sedna', type: 'Disruption', note: 'All parts from Disruption rotation B & C', rank: 1 },
     ],
   },
   {
-    name: 'Harrow', category: 'warframe',
+    name: 'Harrow', category: 'warframe', imageName: 'harrow.png',
     sources: [
       { mission: 'Pago',         planet: 'Kuva Fortress', type: 'Defection',  note: 'Neuroptics from Rotation C', rank: 1 },
       { mission: 'Spy missions', planet: 'Any',           type: 'Spy',        note: 'Systems from Spy Rotation C', rank: 2 },
@@ -242,117 +268,117 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Khora', category: 'warframe',
+    name: 'Khora', category: 'warframe', imageName: 'khora.png',
     sources: [
       { mission: 'Sanctuary Onslaught', planet: 'Any', type: 'Special', note: 'All parts drop at Zone 4 / 6 / 8', rank: 1 },
     ],
   },
   {
-    name: 'Lavos', category: 'warframe',
+    name: 'Lavos', category: 'warframe', imageName: 'lavos.png',
     sources: [
       { mission: 'Son (Necralisk)', planet: 'Deimos', type: 'Vendor', note: 'Buy parts with Son Tokens', rank: 1 },
     ],
   },
   {
-    name: 'Mag', category: 'warframe',
+    name: 'Mag', category: 'warframe', imageName: 'mag.png',
     sources: [
       { mission: 'Iliad', planet: 'Phobos', type: 'Boss', note: 'The Sergeant boss fight', rank: 1 },
     ],
   },
   {
-    name: 'Mesa', category: 'warframe',
+    name: 'Mesa', category: 'warframe', imageName: 'mesa.png',
     sources: [
       { mission: 'Mutalist Alad V', planet: 'Eris', type: 'Boss', note: 'Requires Mutalist Coordinates key', rank: 1 },
     ],
   },
   {
-    name: 'Nekros', category: 'warframe',
+    name: 'Nekros', category: 'warframe', imageName: 'nekros.png',
     sources: [
       { mission: 'Orokin Derelict Assassination', planet: 'Derelict', type: 'Boss', note: 'Lephantis — requires Derelict Assassination key', rank: 1 },
     ],
   },
   {
-    name: 'Nidus', category: 'warframe',
+    name: 'Nidus', category: 'warframe', imageName: 'nidus.png',
     sources: [
       { mission: 'Infested Salvage', planet: 'Eris', type: 'Rotation C', note: 'Complete The Glast Gambit quest first', rank: 1 },
     ],
   },
   {
-    name: 'Nova', category: 'warframe',
+    name: 'Nova', category: 'warframe', imageName: 'nova.png',
     sources: [
       { mission: 'Naamah', planet: 'Europa', type: 'Boss', note: 'The Raptor boss fight', rank: 1 },
     ],
   },
   {
-    name: 'Octavia', category: 'warframe',
+    name: 'Octavia', category: 'warframe', imageName: 'octavia.png',
     sources: [
       { mission: 'Lua Music Puzzle',  planet: 'Lua',      type: 'Cache / Puzzle', note: 'Chassis — hidden music room in Orokin Moon', rank: 1 },
       { mission: 'Orokin Derelict',   planet: 'Derelict', type: 'Rotation C',     note: 'Systems from Rotation C cache', rank: 2 },
     ],
   },
   {
-    name: 'Protea', category: 'warframe',
+    name: 'Protea', category: 'warframe', imageName: 'protea.png',
     sources: [
       { mission: 'Granum Void', planet: 'Neptune', type: 'Special', note: 'Psamathe node — requires Granum Crown', rank: 1 },
     ],
   },
   {
-    name: 'Revenant', category: 'warframe',
+    name: 'Revenant', category: 'warframe', imageName: 'revenant.png',
     sources: [
       { mission: 'Plains of Eidolon Bounties', planet: 'Earth', type: 'Bounty', note: 'Night-time bounties from Konzu in Cetus', rank: 1 },
     ],
   },
   {
-    name: 'Rhino', category: 'warframe',
+    name: 'Rhino', category: 'warframe', imageName: 'rhino.png',
     sources: [
       { mission: 'Fossa', planet: 'Venus', type: 'Boss', note: 'Jackal boss — good early-game farm', rank: 1 },
     ],
   },
   {
-    name: 'Saryn', category: 'warframe',
+    name: 'Saryn', category: 'warframe', imageName: 'saryn.png',
     sources: [
       { mission: 'Merrow', planet: 'Sedna', type: 'Boss', note: 'Kela De Thaym — complete Rathuum matches to unlock', rank: 1 },
     ],
   },
   {
-    name: 'Sevagoth', category: 'warframe',
+    name: 'Sevagoth', category: 'warframe', imageName: 'sevagoth.png',
     sources: [
       { mission: 'Void Storm', planet: 'Any (Railjack)', type: 'Railjack', note: 'All parts from Void Storm mission rotations', rank: 1 },
     ],
   },
   {
-    name: 'Titania', category: 'warframe',
+    name: 'Titania', category: 'warframe', imageName: 'titania.png',
     sources: [
       { mission: 'A Man of Few Words', planet: 'Any', type: 'Quest', note: 'Parts from quest + Orokin Derelict bounties', rank: 1 },
     ],
   },
   {
-    name: 'Trinity', category: 'warframe',
+    name: 'Trinity', category: 'warframe', imageName: 'trinity.png',
     sources: [
       { mission: 'Hades', planet: 'Pluto', type: 'Boss', note: 'Ambulas boss — requires Animo Nav Beacons', rank: 1 },
     ],
   },
   {
-    name: 'Wisp', category: 'warframe',
+    name: 'Wisp', category: 'warframe', imageName: 'wisp.png',
     sources: [
       { mission: 'The Ropalolyst', planet: 'Jupiter', type: 'Boss', note: 'Complete The Jovian Concord quest first', rank: 1 },
     ],
   },
   {
-    name: 'Wukong', category: 'warframe',
+    name: 'Wukong', category: 'warframe', imageName: 'wukong.png',
     sources: [
       { mission: 'Any (Lua)', planet: 'Lua', type: 'Any', note: 'Parts drop from Orokin Moon mission rotations', rank: 1 },
     ],
   },
   {
-    name: 'Xaku', category: 'warframe',
+    name: 'Xaku', category: 'warframe', imageName: 'xaku.png',
     sources: [
       { mission: 'Cambion Drift Bounties', planet: 'Deimos',   type: 'Bounty',   note: 'Chassis from Mother bounties', rank: 1 },
       { mission: 'Void Storm',             planet: 'Railjack', type: 'Railjack', note: 'Neuroptics & Systems from Void Storm', rank: 2 },
     ],
   },
   {
-    name: 'Yareli', category: 'warframe',
+    name: 'Yareli', category: 'warframe', imageName: 'yareli.png',
     sources: [
       { mission: 'Waverider Quest', planet: 'Orbiter', type: 'Quest', note: 'Complete the Waverider quest in the Helminth room', rank: 1 },
     ],
@@ -466,7 +492,7 @@ export const ITEMS: Item[] = [
 
   // ── Prime Parts ───────────────────────────────────────────────────────────
   {
-    name: 'Rhino Prime', category: 'prime', ducats: 65,
+    name: 'Rhino Prime', category: 'prime', ducats: 65, imageName: 'rhinoPrime.png',
     wikiSlug: 'Rhino/Prime',
     sources: [
       { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relics — may require Axi or Neo tier', rank: 1 },
@@ -474,7 +500,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Saryn Prime', category: 'prime', ducats: 100,
+    name: 'Saryn Prime', category: 'prime', ducats: 100, imageName: 'sarynPrime.png',
     wikiSlug: 'Saryn/Prime',
     sources: [
       { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relics — may require Axi or Neo tier', rank: 1 },
@@ -482,35 +508,35 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Mesa Prime', category: 'prime', ducats: 100,
+    name: 'Mesa Prime', category: 'prime', ducats: 100, imageName: 'mesaPrime.png',
     wikiSlug: 'Mesa/Prime',
     sources: [
       { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relics — Axi/Neo tier typically', rank: 1 },
     ],
   },
   {
-    name: 'Nova Prime', category: 'prime', ducats: 65,
+    name: 'Nova Prime', category: 'prime', ducats: 65, imageName: 'novaPrime.png',
     wikiSlug: 'Nova/Prime',
     sources: [
       { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki for current relic list', rank: 1 },
     ],
   },
   {
-    name: 'Trinity Prime', category: 'prime', ducats: 65,
+    name: 'Trinity Prime', category: 'prime', ducats: 65, imageName: 'trinityPrime.png',
     wikiSlug: 'Trinity/Prime',
     sources: [
       { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
     ],
   },
   {
-    name: 'Loki Prime', category: 'prime', ducats: 65,
+    name: 'Loki Prime', category: 'prime', ducats: 65, imageName: 'lokiPrime.png',
     wikiSlug: 'Loki/Prime',
     sources: [
       { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },
     ],
   },
   {
-    name: 'Volt Prime', category: 'prime', ducats: 45,
+    name: 'Volt Prime', category: 'prime', ducats: 45, imageName: 'voltPrime.png',
     wikiSlug: 'Volt/Prime',
     sources: [
       { mission: 'Void Fissure', planet: 'Any', type: 'Void Fissure', note: 'Check wiki — may be vaulted; tradeable from other players', rank: 1 },

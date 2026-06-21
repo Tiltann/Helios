@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import Fuse from 'fuse.js'
-import { ITEMS, type Item } from './data'
+import { ITEMS, PLANETS, type Item } from './data'
 import { T, type Locale, type TKey, LOCALE_LABELS } from './i18n'
 
 const LOCALES = Object.keys(LOCALE_LABELS) as Locale[]
 
 const CATEGORY_COLOR: Record<string, string> = {
-  resource: '#5284e0', prime: '#c49a3c', warframe: '#52c27a', mod: '#c47a3c',
+  resource: '#5284e0', prime: '#c49a3c', warframe: '#52c27a', mod: '#c47a3c', all: '#c49a3c',
 }
+
+const CATEGORIES = ['all', 'resource', 'warframe', 'mod', 'prime'] as const
 
 const BEGINNER_KEYS: TKey[] = [
   'termSurvival', 'termDefense', 'termExcavation', 'termDarkSector',
@@ -17,24 +19,39 @@ const BEGINNER_KEYS: TKey[] = [
 ]
 
 // ── State ─────────────────────────────────────────────────────────────────
-const locale       = ref<Locale>('en')
-const t            = computed(() => T[locale.value])
-const catLabel     = computed((): Record<string, string> => ({
+const locale         = ref<Locale>('en')
+const t              = computed(() => T[locale.value])
+const catLabel       = computed((): Record<string, string> => ({
+  all:      t.value.catAll,
   resource: t.value.catResource,
   prime:    t.value.catPrime,
   warframe: t.value.catWarframe,
   mod:      t.value.catMod,
 }))
 
-const query        = ref('')
-const results      = ref<Item[]>([])
-const selected     = ref<Item | null>(null)
-const cursor       = ref(0)
-const input        = ref<HTMLInputElement | null>(null)
-const beginnerOpen = ref(false)
-const imageMap     = ref<Record<string, string>>({})
+const query          = ref('')
+const results        = ref<Item[]>([])
+const selected       = ref<Item | null>(null)
+const cursor         = ref(0)
+const input          = ref<HTMLInputElement | null>(null)
+const beginnerModal  = ref(false)
+const imageMap       = ref<Record<string, string>>({})
+const activeCategory = ref<string | null>(null)
 
 const fuse = new Fuse(ITEMS, { keys: ['name', 'category'], threshold: 0.35 })
+
+// ── Computed ───────────────────────────────────────────────────────────────
+const filteredResults = computed(() =>
+  activeCategory.value
+    ? results.value.filter(i => i.category === activeCategory.value)
+    : results.value
+)
+
+const browseItems = computed(() =>
+  activeCategory.value
+    ? ITEMS.filter(i => i.category === activeCategory.value)
+    : ITEMS
+)
 
 // ── Functions ─────────────────────────────────────────────────────────────
 function search() {
@@ -51,19 +68,24 @@ function pick(item: Item, i: number) {
   cursor.value = i
 }
 
+function selectBrowse(item: Item) {
+  selected.value = item
+}
+
 function onKey(e: KeyboardEvent) {
+  const list = filteredResults.value
   if (e.key === 'ArrowDown') {
     e.preventDefault()
-    const n = Math.min(cursor.value + 1, results.value.length - 1)
-    pick(results.value[n], n)
+    const n = Math.min(cursor.value + 1, list.length - 1)
+    if (list[n]) pick(list[n], n)
   } else if (e.key === 'ArrowUp') {
     e.preventDefault()
     const n = Math.max(cursor.value - 1, 0)
-    pick(results.value[n], n)
+    if (list[n]) pick(list[n], n)
   } else if (e.key === 'Escape') {
     query.value = ''
     search()
-    beginnerOpen.value = false
+    beginnerModal.value = false
   }
 }
 
@@ -80,7 +102,9 @@ function wikiUrl(item: Item): string {
 }
 
 function getImage(item: Item): string {
-  return item.image ?? imageMap.value[item.name] ?? ''
+  if (item.image) return item.image
+  if (item.imageName) return `https://cdn.warframestat.us/img/${item.imageName}`
+  return imageMap.value[item.name] ?? ''
 }
 
 function termParts(key: TKey): { label: string; body: string } {
@@ -118,14 +142,54 @@ const hasBorder = computed(() => !!query.value)
 <template>
   <div class="min-h-screen flex flex-col items-center px-4" style="background:#07090f">
 
+    <!-- Beginner modal overlay -->
+    <Transition name="fade">
+      <div v-if="beginnerModal"
+           class="fixed inset-0 z-50 flex items-center justify-center p-4"
+           style="background:rgba(7,9,15,0.9);backdrop-filter:blur(4px)"
+           @click.self="beginnerModal = false">
+        <div class="w-full max-w-[700px] rounded-[12px] overflow-hidden"
+             style="border:1px solid #1c1f27;background:#0e1016;max-height:85vh;overflow-y:auto">
+
+          <div class="flex items-center justify-between"
+               style="padding:16px 20px;border-bottom:1px solid #14171e;background:rgba(196,154,60,0.03)">
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#c49a3c">{{ t.beginnerTitle }}</div>
+              <div style="font-size:11px;color:#3a4050;margin-top:2px">{{ t.beginnerIntro }}</div>
+            </div>
+            <button @click="beginnerModal = false"
+                    style="color:#3a4050;background:transparent;border:none;cursor:pointer;
+                           font-size:26px;line-height:1;padding:2px 8px;flex-shrink:0;transition:color 0.15s"
+                    @mouseenter="(e) => ((e.target as HTMLElement).style.color='#c49a3c')"
+                    @mouseleave="(e) => ((e.target as HTMLElement).style.color='#3a4050')">×</button>
+          </div>
+
+          <div style="padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px">
+            <div v-for="key in BEGINNER_KEYS" :key="key"
+                 style="padding:10px 12px;background:#111318;border-radius:7px;border:1px solid #14171e">
+              <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#c49a3c;margin-bottom:4px">
+                {{ termParts(key).label }}
+              </div>
+              <div style="font-size:11px;color:#4a5568;line-height:1.55">
+                {{ termParts(key).body }}
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:10px 20px;border-top:1px solid #14171e">
+            <span style="font-size:10.5px;color:#2e3545;font-style:italic">{{ t.darkSectorNote }}</span>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <!-- Header -->
     <div class="mt-[10vh] mb-5 text-center">
-      <div class="flex items-center justify-center gap-2.5 mb-1.5">
-        <span class="w-2 h-2 rounded-full" style="background:#c49a3c;box-shadow:0 0 8px #c49a3c88"/>
-        <span style="font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#c49a3c">
+      <div class="flex items-center justify-center gap-3 mb-1.5">
+        <img src="/logo.svg" alt="Helios" style="width:36px;height:36px"/>
+        <span style="font-size:13px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#c49a3c">
           Helios
         </span>
-        <span class="w-2 h-2 rounded-full" style="background:#c49a3c;box-shadow:0 0 8px #c49a3c88"/>
       </div>
       <p style="font-size:12px;color:#3a4050;letter-spacing:0.08em">{{ t.subtitle }}</p>
     </div>
@@ -133,64 +197,20 @@ const hasBorder = computed(() => !!query.value)
     <!-- Controls row -->
     <div class="w-full max-w-[640px] flex items-center justify-between mb-3">
       <button
-        @click="beginnerOpen = !beginnerOpen"
+        @click="beginnerModal = !beginnerModal"
         :style="{
           fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em',
           padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', transition: 'all 0.15s',
-          color: beginnerOpen ? '#c49a3c' : '#3a4050',
-          background: beginnerOpen ? 'rgba(196,154,60,0.08)' : 'transparent',
-          border: `1px solid ${beginnerOpen ? 'rgba(196,154,60,0.3)' : '#1c1f27'}`,
+          color: beginnerModal ? '#c49a3c' : '#3a4050',
+          background: beginnerModal ? 'rgba(196,154,60,0.08)' : 'transparent',
+          border: `1px solid ${beginnerModal ? 'rgba(196,154,60,0.3)' : '#1c1f27'}`,
         }"
-      >
-        {{ t.beginnerMode }}
-      </button>
+      >{{ t.beginnerMode }}</button>
 
       <select v-model="locale" class="locale-select">
         <option v-for="l in LOCALES" :key="l" :value="l">{{ LOCALE_LABELS[l] }}</option>
       </select>
     </div>
-
-    <!-- Beginner panel -->
-    <Transition name="slide">
-      <div v-if="beginnerOpen"
-           class="w-full max-w-[640px] mb-4 overflow-hidden rounded-[10px]"
-           style="border:1px solid #1c1f27;background:#0e1016">
-
-        <div style="padding:14px 18px 10px;border-bottom:1px solid #14171e">
-          <div style="font-size:13px;font-weight:700;color:#c49a3c;margin-bottom:3px">
-            {{ t.beginnerTitle }}
-          </div>
-          <div style="font-size:11px;color:#3a4050">{{ t.beginnerIntro }}</div>
-        </div>
-
-        <div style="padding:12px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:8px">
-          <div v-for="key in BEGINNER_KEYS" :key="key"
-               style="padding:10px 12px;background:#111318;border-radius:7px;border:1px solid #14171e">
-            <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#c49a3c;margin-bottom:4px">
-              {{ termParts(key).label }}
-            </div>
-            <div style="font-size:11px;color:#4a5568;line-height:1.55">
-              {{ termParts(key).body }}
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between"
-             style="padding:9px 16px;border-top:1px solid #14171e">
-          <span style="font-size:10.5px;color:#2e3545;font-style:italic">{{ t.darkSectorNote }}</span>
-          <button
-            @click="beginnerOpen = false"
-            style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
-                   color:#3a4050;background:transparent;border:none;cursor:pointer;
-                   padding:4px 8px;flex-shrink:0;margin-left:12px;transition:color 0.15s"
-            @mouseenter="(e) => ((e.target as HTMLElement).style.color='#c49a3c')"
-            @mouseleave="(e) => ((e.target as HTMLElement).style.color='#3a4050')"
-          >
-            {{ t.beginnerClose }}
-          </button>
-        </div>
-      </div>
-    </Transition>
 
     <!-- Search -->
     <div class="w-full max-w-[640px]">
@@ -204,7 +224,6 @@ const hasBorder = computed(() => !!query.value)
              width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#c49a3c" stroke-width="1.6">
           <circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/>
         </svg>
-
         <input
           ref="input"
           v-model="query"
@@ -214,67 +233,113 @@ const hasBorder = computed(() => !!query.value)
           class="w-full bg-transparent border-none outline-none"
           style="padding:15px 44px;font-size:15.5px;color:#d4c4a0;font-family:inherit"
         />
-
         <button v-if="query" @click="query='';search()"
           class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer border-none bg-transparent"
           style="color:#3a4050;font-size:20px;line-height:1;padding:4px">×</button>
       </div>
+    </div>
 
-      <!-- Space hint -->
-      <Transition name="fade">
-        <p v-if="!query" class="text-center mt-2.5"
-           style="font-size:11px;color:#1e2530;letter-spacing:0.06em">
-          {{ t.spaceHint }}
-        </p>
-      </Transition>
+    <!-- Category tabs -->
+    <div class="w-full max-w-[640px] flex gap-2 mt-3 flex-wrap">
+      <button
+        v-for="cat in CATEGORIES"
+        :key="cat"
+        @click="activeCategory = cat === 'all' ? null : cat"
+        :style="{
+          fontSize: '10px', fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.1em', padding: '5px 13px', borderRadius: '20px',
+          cursor: 'pointer', transition: 'all 0.15s',
+          color: (activeCategory === cat || (cat === 'all' && !activeCategory))
+            ? '#07090f' : (CATEGORY_COLOR[cat] ?? '#3a4050'),
+          background: (activeCategory === cat || (cat === 'all' && !activeCategory))
+            ? (CATEGORY_COLOR[cat] ?? '#c49a3c') : 'transparent',
+          border: `1px solid ${(activeCategory === cat || (cat === 'all' && !activeCategory))
+            ? (CATEGORY_COLOR[cat] ?? '#c49a3c') : '#1c1f27'}`,
+        }"
+      >{{ catLabel[cat] ?? cat }}</button>
+    </div>
 
-      <!-- No results -->
-      <Transition name="fade">
-        <p v-if="query && !results.length" class="text-center mt-3"
-           style="font-size:11.5px;color:#3a4050">
-          {{ t.noResults }}
-        </p>
-      </Transition>
+    <!-- No results -->
+    <Transition name="fade">
+      <p v-if="query && !filteredResults.length" class="w-full max-w-[640px] text-center mt-4"
+         style="font-size:11.5px;color:#3a4050">
+        {{ t.noResults }}
+      </p>
+    </Transition>
 
-      <!-- Results list -->
-      <Transition name="fade">
-        <div v-if="results.length" class="mt-1.5 overflow-hidden rounded-[10px]"
-             style="border:1px solid #1c1f27;background:#0e1016">
+    <!-- Results list (when searching) -->
+    <Transition name="fade">
+      <div v-if="query && filteredResults.length" class="w-full max-w-[640px] mt-2 overflow-hidden rounded-[10px]"
+           style="border:1px solid #1c1f27;background:#0e1016">
+        <button
+          v-for="(item, i) in filteredResults"
+          :key="item.name"
+          class="flex items-center gap-3 w-full text-left cursor-pointer border-none transition-colors duration-75"
+          :style="{
+            padding: '10px 14px',
+            background: selected?.name === item.name ? 'rgba(196,154,60,0.05)' : 'transparent',
+            borderBottom: i < filteredResults.length - 1 ? '1px solid #0d0f14' : 'none',
+          }"
+          @click="pick(item, i)"
+          @mouseenter="pick(item, i)"
+        >
+          <img v-if="getImage(item)" :src="getImage(item)" alt=""
+               class="shrink-0 object-contain opacity-80"
+               style="width:26px;height:26px"
+               @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
+          <div v-else class="shrink-0 rounded" style="width:26px;height:26px;background:#14171e"/>
+
+          <span class="flex-1" style="font-size:13.5px;color:#c8b890;font-weight:500">{{ item.name }}</span>
+
+          <span class="shrink-0" :style="{
+            fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+            padding: '2px 6px', borderRadius: '3px',
+            color: CATEGORY_COLOR[item.category],
+            background: CATEGORY_COLOR[item.category] + '18',
+            border: `1px solid ${CATEGORY_COLOR[item.category]}28`,
+          }">{{ catLabel[item.category] }}</span>
+        </button>
+      </div>
+    </Transition>
+
+    <!-- Browse grid (when not searching) -->
+    <Transition name="fade">
+      <div v-if="!query" class="w-full max-w-[640px] mt-3">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px">
           <button
-            v-for="(item, i) in results"
+            v-for="item in browseItems"
             :key="item.name"
-            class="flex items-center gap-3 w-full text-left cursor-pointer border-none transition-colors duration-75"
+            @click="selectBrowse(item)"
+            class="text-left cursor-pointer rounded-[8px] transition-colors duration-75"
             :style="{
-              padding: '10px 14px',
-              background: selected?.name === item.name ? 'rgba(196,154,60,0.05)' : 'transparent',
-              borderBottom: i < results.length - 1 ? '1px solid #0d0f14' : 'none',
+              padding: '10px 12px',
+              border: `1px solid ${selected?.name === item.name ? 'rgba(196,154,60,0.4)' : '#1c1f27'}`,
+              background: selected?.name === item.name ? 'rgba(196,154,60,0.04)' : '#0e1016',
             }"
-            @click="pick(item, i)"
-            @mouseenter="pick(item, i)"
+            @mouseenter="(e) => { if (selected?.name !== item.name) (e.currentTarget as HTMLElement).style.borderColor = '#c49a3c33' }"
+            @mouseleave="(e) => { if (selected?.name !== item.name) (e.currentTarget as HTMLElement).style.borderColor = '#1c1f27' }"
           >
-            <img v-if="getImage(item)" :src="getImage(item)" alt=""
-                 class="shrink-0 object-contain opacity-80"
-                 style="width:26px;height:26px"
-                 @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
-            <div v-else class="shrink-0 rounded" style="width:26px;height:26px;background:#14171e"/>
-
-            <span class="flex-1" style="font-size:13.5px;color:#c8b890;font-weight:500">{{ item.name }}</span>
-
-            <span class="shrink-0" :style="{
-              fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
-              padding: '2px 6px', borderRadius: '3px',
+            <div class="flex items-center gap-2 mb-2">
+              <img v-if="getImage(item)" :src="getImage(item)" alt=""
+                   style="width:22px;height:22px;object-fit:contain;opacity:0.8;flex-shrink:0"
+                   @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
+              <div v-else style="width:22px;height:22px;background:#14171e;border-radius:4px;flex-shrink:0"/>
+              <span style="font-size:12px;font-weight:500;color:#c8b890;line-height:1.3">{{ item.name }}</span>
+            </div>
+            <span :style="{
+              fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
+              padding: '1px 6px', borderRadius: '3px',
               color: CATEGORY_COLOR[item.category],
               background: CATEGORY_COLOR[item.category] + '18',
-              border: `1px solid ${CATEGORY_COLOR[item.category]}28`,
             }">{{ catLabel[item.category] }}</span>
           </button>
         </div>
-      </Transition>
-    </div>
+      </div>
+    </Transition>
 
     <!-- Detail card -->
     <Transition name="fade">
-      <div v-if="selected" class="w-full max-w-[640px] mt-3 overflow-hidden rounded-[10px]"
+      <div v-if="selected" class="w-full max-w-[640px] mt-4 mb-2 overflow-hidden rounded-[10px]"
            style="border:1px solid #1c1f27;background:#0e1016">
 
         <!-- Card header -->
@@ -312,7 +377,11 @@ const hasBorder = computed(() => !!query.value)
 
           <div v-for="(src, i) in selected.sources" :key="i"
                class="flex items-start gap-3"
-               :style="{ padding:'10px 18px', borderTop: i > 0 ? '1px solid #0d0f14' : undefined }">
+               :style="{
+                 padding: '12px 18px',
+                 borderTop: i > 0 ? '1px solid #0d0f14' : undefined,
+                 borderLeft: i === 0 ? '2px solid rgba(196,154,60,0.4)' : '2px solid transparent',
+               }">
 
             <div class="shrink-0 flex items-center justify-center rounded-full"
                  :style="{
@@ -331,9 +400,26 @@ const hasBorder = computed(() => !!query.value)
                              background:rgba(82,132,224,0.1);border:1px solid rgba(82,132,224,0.18)">
                   {{ src.type }}
                 </span>
-                <span style="font-size:11px;color:#3a4050">{{ src.planet }}</span>
+                <!-- Planet chip -->
+                <span v-if="src.planet && PLANETS[src.planet]"
+                      class="inline-flex items-center gap-1.5"
+                      :style="{
+                        fontSize: '9.5px', fontWeight: 700, textTransform: 'uppercase',
+                        letterSpacing: '0.07em', padding: '2px 7px', borderRadius: '12px',
+                        color: PLANETS[src.planet].color,
+                        background: PLANETS[src.planet].color + '18',
+                        border: `1px solid ${PLANETS[src.planet].color}40`,
+                      }">
+                  <span :style="{
+                    width: '6px', height: '6px', borderRadius: '50%',
+                    background: PLANETS[src.planet].color,
+                    display: 'inline-block', flexShrink: 0,
+                  }"/>
+                  {{ PLANETS[src.planet].abbr }}
+                </span>
+                <span v-else style="font-size:11px;color:#3a4050">{{ src.planet }}</span>
               </div>
-              <div v-if="src.note" style="font-size:11.5px;color:#4a5060;margin-top:3px">{{ src.note }}</div>
+              <div v-if="src.note" style="font-size:11.5px;color:#4a5060;margin-top:4px">{{ src.note }}</div>
             </div>
           </div>
         </div>
