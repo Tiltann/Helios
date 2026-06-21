@@ -16,6 +16,7 @@ export interface Item {
   ducats?: number
   sources: Source[]
   wikiSlug?: string
+  spoiler?: boolean
 }
 
 export const PLANETS: Record<string, { color: string; abbr: string }> = {
@@ -259,7 +260,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Harrow', category: 'warframe', imageName: 'harrow.png',
+    name: 'Harrow', category: 'warframe', imageName: 'harrow.png', spoiler: true,
     sources: [
       { mission: 'Pago',         planet: 'Kuva Fortress', type: 'Defection',  note: 'Neuroptics drops from rotation C', rank: 1 },
       { mission: 'Spy missions', planet: 'Any',           type: 'Spy',        note: 'Systems come from Spy rotation C', rank: 2 },
@@ -273,7 +274,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Lavos', category: 'warframe', imageName: 'lavos.png',
+    name: 'Lavos', category: 'warframe', imageName: 'lavos.png', spoiler: true,
     sources: [
       { mission: 'Son (Necralisk)', planet: 'Deimos', type: 'Vendor', note: 'Buy parts with Son Tokens', rank: 1 },
     ],
@@ -297,7 +298,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Nidus', category: 'warframe', imageName: 'nidus.png',
+    name: 'Nidus', category: 'warframe', imageName: 'nidus.png', spoiler: true,
     sources: [
       { mission: 'Infested Salvage', planet: 'Eris', type: 'Rotation C', note: 'Complete The Glast Gambit quest first', rank: 1 },
     ],
@@ -309,20 +310,20 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Octavia', category: 'warframe', imageName: 'octavia.png',
+    name: 'Octavia', category: 'warframe', imageName: 'octavia.png', spoiler: true,
     sources: [
       { mission: 'Lua Music Puzzle',  planet: 'Lua',      type: 'Cache / Puzzle', note: 'Chassis comes from the hidden music room puzzle in Orokin Moon', rank: 1 },
       { mission: 'Orokin Derelict',   planet: 'Derelict', type: 'Rotation C',     note: 'Systems drop from the rotation C cache', rank: 2 },
     ],
   },
   {
-    name: 'Protea', category: 'warframe', imageName: 'protea.png',
+    name: 'Protea', category: 'warframe', imageName: 'protea.png', spoiler: true,
     sources: [
       { mission: 'Granum Void', planet: 'Neptune', type: 'Special', note: 'Psamathe node, bring a Granum Crown to enter', rank: 1 },
     ],
   },
   {
-    name: 'Revenant', category: 'warframe', imageName: 'revenant.png',
+    name: 'Revenant', category: 'warframe', imageName: 'revenant.png', spoiler: true,
     sources: [
       { mission: 'Plains of Eidolon Bounties', planet: 'Earth', type: 'Bounty', note: 'Night-time bounties only, pick them up from Konzu in Cetus', rank: 1 },
     ],
@@ -346,7 +347,7 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Titania', category: 'warframe', imageName: 'titania.png',
+    name: 'Titania', category: 'warframe', imageName: 'titania.png', spoiler: true,
     sources: [
       { mission: 'A Man of Few Words', planet: 'Any', type: 'Quest', note: 'Some parts come from the quest itself, others from Orokin Derelict bounties', rank: 1 },
     ],
@@ -358,26 +359,26 @@ export const ITEMS: Item[] = [
     ],
   },
   {
-    name: 'Wisp', category: 'warframe', imageName: 'wisp.png',
+    name: 'Wisp', category: 'warframe', imageName: 'wisp.png', spoiler: true,
     sources: [
       { mission: 'The Ropalolyst', planet: 'Jupiter', type: 'Boss', note: 'Finish The Jovian Concord quest to unlock this boss', rank: 1 },
     ],
   },
   {
-    name: 'Wukong', category: 'warframe', imageName: 'wukong.png',
+    name: 'Wukong', category: 'warframe', imageName: 'wukong.png', spoiler: true,
     sources: [
       { mission: 'Any (Lua)', planet: 'Lua', type: 'Any', note: 'Parts drop from any Orokin Moon rotation', rank: 1 },
     ],
   },
   {
-    name: 'Xaku', category: 'warframe', imageName: 'xaku.png',
+    name: 'Xaku', category: 'warframe', imageName: 'xaku.png', spoiler: true,
     sources: [
       { mission: 'Cambion Drift Bounties', planet: 'Deimos',   type: 'Bounty',   note: 'Chassis drops from Mother bounties', rank: 1 },
       { mission: 'Void Storm',             planet: 'Railjack', type: 'Railjack', note: 'Neuroptics and Systems come from Void Storm', rank: 2 },
     ],
   },
   {
-    name: 'Yareli', category: 'warframe', imageName: 'yareli.png',
+    name: 'Yareli', category: 'warframe', imageName: 'yareli.png', spoiler: true,
     sources: [
       { mission: 'Waverider Quest', planet: 'Orbiter', type: 'Quest', note: 'Start the Waverider quest from the Helminth room in your Orbiter', rank: 1 },
     ],

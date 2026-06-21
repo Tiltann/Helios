@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import Fuse from 'fuse.js'
 import { ITEMS, PLANETS, type Item } from './data'
-import { T, type Locale, type TKey, LOCALE_LABELS } from './i18n'
+import { T, PLANET_LABELS, TYPE_LABELS, type Locale, type TKey, LOCALE_LABELS } from './i18n'
 
 const LOCALES = Object.keys(LOCALE_LABELS) as Locale[]
 
@@ -37,20 +37,26 @@ const input          = ref<HTMLInputElement | null>(null)
 const beginnerModal  = ref(false)
 const imageMap       = ref<Record<string, string>>({})
 const activeCategory = ref<string | null>(null)
+const spoilerMode    = ref(false)
 
 const fuse = new Fuse(ITEMS, { keys: ['name', 'category'], threshold: 0.35 })
 
-const filteredResults = computed(() =>
-  activeCategory.value
-    ? results.value.filter(i => i.category === activeCategory.value)
-    : results.value
+const visibleItems = computed(() =>
+  spoilerMode.value ? ITEMS : ITEMS.filter(i => !i.spoiler)
 )
+
+const filteredResults = computed(() => {
+  let r = results.value
+  if (!spoilerMode.value) r = r.filter(i => !i.spoiler)
+  if (activeCategory.value) r = r.filter(i => i.category === activeCategory.value)
+  return r
+})
 
 const displayItems = computed(() => {
   if (query.value.trim()) return filteredResults.value
   return activeCategory.value
-    ? ITEMS.filter(i => i.category === activeCategory.value)
-    : ITEMS
+    ? visibleItems.value.filter(i => i.category === activeCategory.value)
+    : visibleItems.value
 })
 
 function isActiveTab(cat: string): boolean {
@@ -120,9 +126,12 @@ function getImage(item: Item): string {
     || (item.imageName ? `https://cdn.warframestat.us/img/${item.imageName}` : '')
 }
 
+function tPlanet(p: string): string { return PLANET_LABELS[locale.value][p] ?? p }
+function tType(ty: string): string  { return TYPE_LABELS[locale.value][ty]   ?? ty }
+
 function bestSource(item: Item): string {
   const s = item.sources[0]
-  return s ? [s.mission, s.planet, s.type].filter(Boolean).join(', ') : ''
+  return s ? [s.mission, tPlanet(s.planet), tType(s.type)].filter(Boolean).join(', ') : ''
 }
 
 function termParts(key: TKey): { label: string; body: string } {
@@ -209,6 +218,15 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
           <span class="text-[11px] text-[#4a5870] ml-1.5 tracking-[0.04em]">{{ t.subtitle }}</span>
         </div>
         <div class="flex items-center gap-2">
+          <button @click="spoilerMode = !spoilerMode"
+                  class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
+                         rounded cursor-pointer transition-all duration-150
+                         bg-transparent border"
+                  :class="spoilerMode
+                    ? 'text-[#c49a3c] border-[rgba(196,154,60,0.35)]'
+                    : 'text-[#5a6a88] border-[#1c1f27] hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.3)]'">
+            Spoilers {{ spoilerMode ? 'on' : 'off' }}
+          </button>
           <button @click="beginnerModal = true"
                   class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
                          rounded cursor-pointer transition-all duration-150
@@ -357,7 +375,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                                px-[5px] py-[2px] rounded-[3px]
                                text-[#5284e0] bg-[rgba(82,132,224,0.08)]
                                border border-[rgba(82,132,224,0.15)]">
-                    {{ src.type }}
+                    {{ tType(src.type) }}
                   </span>
 
                   <!-- Planet chip -->
@@ -371,9 +389,9 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                         }">
                     <span class="w-[5px] h-[5px] rounded-full shrink-0 inline-block"
                           :style="{ background: PLANETS[src.planet].color }"/>
-                    {{ src.planet }}
+                    {{ tPlanet(src.planet) }}
                   </span>
-                  <span v-else class="text-[11px] text-[#5a6a88]">{{ src.planet }}</span>
+                  <span v-else class="text-[11px] text-[#5a6a88]">{{ tPlanet(src.planet) }}</span>
                 </div>
 
                 <div v-if="src.note"
