@@ -1,4 +1,11 @@
-export type Category = "resource" | "prime" | "warframe" | "mod" | "relic" | "weapon" | "companion";
+export type Category =
+  | "resource"
+  | "prime"
+  | "warframe"
+  | "mod"
+  | "relic"
+  | "weapon"
+  | "companion";
 
 export interface Source {
   mission: string;
@@ -21,45 +28,123 @@ export interface Item {
   vaulted?: boolean;
 }
 
-export const PLANETS: Record<string, { color: string; abbr: string; img?: string }> = {
-  Earth:            { color: '#4a8c3c', abbr: 'ETH', img: 'NavigationFeatureItemEarth.png' },
-  Venus:            { color: '#c4a23c', abbr: 'VEN', img: 'NavigationFeatureItemVenus.png' },
-  Mercury:          { color: '#8c7c5c', abbr: 'MER', img: 'NavigationFeatureItemMercury.png' },
-  Mars:             { color: '#c44c3c', abbr: 'MRS', img: 'NavigationFeatureItemMars.png' },
-  Phobos:           { color: '#8c5c3c', abbr: 'PHB', img: 'NavigationFeatureItemPhobos.png' },
-  Ceres:            { color: '#9c7c5c', abbr: 'CRS', img: 'NavigationFeatureItemCeres.png' },
-  Jupiter:          { color: '#c4943c', abbr: 'JUP', img: 'NavigationFeatureItemJupiter.png' },
-  Europa:           { color: '#5c8ca4', abbr: 'EUR', img: 'NavigationFeatureItemEuropa.png' },
-  Saturn:           { color: '#c4b45c', abbr: 'SAT', img: 'NavigationFeatureItemSaturn.png' },
-  Uranus:           { color: '#5cc4b4', abbr: 'URA', img: 'NavigationFeatureItemUranus.png' },
-  Neptune:          { color: '#3c6cc4', abbr: 'NEP', img: 'NavigationFeatureItemNeptune.png' },
-  Pluto:            { color: '#7c6c8c', abbr: 'PLU', img: 'NavigationFeatureItemPluto.png' },
-  Sedna:            { color: '#c43c5c', abbr: 'SED', img: 'NavigationFeatureItemSedna.png' },
-  Eris:             { color: '#8c3c6c', abbr: 'ERS', img: 'NavigationFeatureItemEris.png' },
-  Lua:              { color: '#d4c4a0', abbr: 'LUA', img: 'FocusLens4Rank.png' },
-  Void:             { color: '#8c5cc4', abbr: 'VOD', img: 'ArgonCrystal.png' },
-  'Kuva Fortress':  { color: '#c43c3c', abbr: 'KUV', img: 'Kuva.png' },
-  Deimos:           { color: '#9c5c3c', abbr: 'DMO', img: 'EntratiFragmentUncommonA.png' },
-  Derelict:         { color: '#5c6c4c', abbr: 'DER' },
-  'Zariman Ten Zero': { color: '#a4a4d4', abbr: 'ZAR', img: 'ZarimanDogTagBounty.png' },
-  'Orb Vallis':     { color: '#c4a23c', abbr: 'OV',  img: 'CrpArachnoidPowerCoreHunger.png' },
-  Railjack:         { color: '#3c8cc4', abbr: 'RJK', img: 'Tellurium.png' },
-  Duviri:           { color: '#9c7cd4', abbr: 'DUV', img: 'DuviriWyrmsoul.png' },
-  Höllvania:        { color: '#d4b44c', abbr: 'HVN' },
+export const PLANETS: Record<
+  string,
+  { color: string; abbr: string; img?: string }
+> = {
+  Earth: {
+    color: "#4a8c3c",
+    abbr: "ETH",
+    img: "NavigationFeatureItemEarth.png",
+  },
+  Venus: {
+    color: "#c4a23c",
+    abbr: "VEN",
+    img: "NavigationFeatureItemVenus.png",
+  },
+  Mercury: {
+    color: "#8c7c5c",
+    abbr: "MER",
+    img: "NavigationFeatureItemMercury.png",
+  },
+  Mars: { color: "#c44c3c", abbr: "MRS", img: "NavigationFeatureItemMars.png" },
+  Phobos: {
+    color: "#8c5c3c",
+    abbr: "PHB",
+    img: "NavigationFeatureItemPhobos.png",
+  },
+  Ceres: {
+    color: "#9c7c5c",
+    abbr: "CRS",
+    img: "NavigationFeatureItemCeres.png",
+  },
+  Jupiter: {
+    color: "#c4943c",
+    abbr: "JUP",
+    img: "NavigationFeatureItemJupiter.png",
+  },
+  Europa: {
+    color: "#5c8ca4",
+    abbr: "EUR",
+    img: "NavigationFeatureItemEuropa.png",
+  },
+  Saturn: {
+    color: "#c4b45c",
+    abbr: "SAT",
+    img: "NavigationFeatureItemSaturn.png",
+  },
+  Uranus: {
+    color: "#5cc4b4",
+    abbr: "URA",
+    img: "NavigationFeatureItemUranus.png",
+  },
+  Neptune: {
+    color: "#3c6cc4",
+    abbr: "NEP",
+    img: "NavigationFeatureItemNeptune.png",
+  },
+  Pluto: {
+    color: "#7c6c8c",
+    abbr: "PLU",
+    img: "NavigationFeatureItemPluto.png",
+  },
+  Sedna: {
+    color: "#c43c5c",
+    abbr: "SED",
+    img: "NavigationFeatureItemSedna.png",
+  },
+  Eris: { color: "#8c3c6c", abbr: "ERS", img: "NavigationFeatureItemEris.png" },
+  Lua: { color: "#d4c4a0", abbr: "LUA", img: "FocusLens4Rank.png" },
+  Void: { color: "#8c5cc4", abbr: "VOD", img: "ArgonCrystal.png" },
+  "Kuva Fortress": { color: "#c43c3c", abbr: "KUV", img: "Kuva.png" },
+  Deimos: {
+    color: "#9c5c3c",
+    abbr: "DMO",
+    img: "EntratiFragmentUncommonA.png",
+  },
+  Derelict: { color: "#5c6c4c", abbr: "DER" },
+  "Zariman Ten Zero": {
+    color: "#a4a4d4",
+    abbr: "ZAR",
+    img: "ZarimanDogTagBounty.png",
+  },
+  "Orb Vallis": {
+    color: "#c4a23c",
+    abbr: "OV",
+    img: "CrpArachnoidPowerCoreHunger.png",
+  },
+  Railjack: { color: "#3c8cc4", abbr: "RJK", img: "Tellurium.png" },
+  Duviri: { color: "#9c7cd4", abbr: "DUV", img: "DuviriWyrmsoul.png" },
+  Höllvania: { color: "#d4b44c", abbr: "HVN" },
 };
 
-const KUVA_SRC: Source[] = [{
-  mission: 'Kuva Lich', planet: 'Any', type: 'Vanquish', rank: 1,
-  note: 'Spawn by mercy-killing a Larvling in any level 20+ Grineer mission. Each Lich carries a random Kuva weapon; complete Murmur missions to find the Requiem sequence, then vanquish (or convert) to claim it. Trade exact weapons on warframe.market.',
-}]
-const TENET_SRC: Source[] = [{
-  mission: 'Sister of Parvos', planet: 'Any', type: 'Vanquish', rank: 1,
-  note: 'Spawn by mercy-killing a Candidate in any Corpus Railjack Proxima mission. Each Sister carries a random Tenet weapon; progress through Murmur missions, then vanquish or convert. Trade on warframe.market for a specific one.',
-}]
-const CODA_SRC: Source[] = [{
-  mission: 'Coda Adversary', planet: 'Any', type: 'Vanquish', rank: 1,
-  note: 'Infested adversary system from the Warframe: 1999 era. Spawn a Coda adversary in Infested missions, progress through Murmur-like nodes, then vanquish or convert to claim the weapon.',
-}]
+const KUVA_SRC: Source[] = [
+  {
+    mission: "Kuva Lich",
+    planet: "Any",
+    type: "Vanquish",
+    rank: 1,
+    note: "Spawn by mercy-killing a Larvling in any level 20+ Grineer mission. Each Lich carries a random Kuva weapon; complete Murmur missions to find the Requiem sequence, then vanquish (or convert) to claim it. Trade exact weapons on warframe.market.",
+  },
+];
+const TENET_SRC: Source[] = [
+  {
+    mission: "Sister of Parvos",
+    planet: "Any",
+    type: "Vanquish",
+    rank: 1,
+    note: "Spawn by mercy-killing a Candidate in any Corpus Railjack Proxima mission. Each Sister carries a random Tenet weapon; progress through Murmur missions, then vanquish or convert. Trade on warframe.market for a specific one.",
+  },
+];
+const CODA_SRC: Source[] = [
+  {
+    mission: "Coda Adversary",
+    planet: "Any",
+    type: "Vanquish",
+    rank: 1,
+    note: "Infested adversary system from the Warframe: 1999 era. Spawn a Coda adversary in Infested missions, progress through Murmur-like nodes, then vanquish or convert to claim the weapon.",
+  },
+];
 
 export const ITEMS: Item[] = [
   // Resources
@@ -2380,167 +2465,575 @@ export const ITEMS: Item[] = [
   },
 
   // ── Kuva Weapons ──────────────────────────────────────────────────────────
-  { name: 'Kuva Bramma',       category: 'weapon', imageName: 'KuvaGrnBow.png',              sources: KUVA_SRC },
-  { name: 'Kuva Chakkhurr',    category: 'weapon', imageName: 'GrnKuvaLichRifleWeapon.png',  sources: KUVA_SRC },
-  { name: 'Kuva Drakgoon',     category: 'weapon', imageName: 'KuvaLichDrakgoonSkin.png',    sources: KUVA_SRC },
-  { name: 'Kuva Hek',          category: 'weapon', imageName: 'KuvaHek.png',                 sources: KUVA_SRC },
-  { name: 'Kuva Hind',         category: 'weapon', imageName: 'KuvaHind.png',                sources: KUVA_SRC },
-  { name: 'Kuva Karak',        category: 'weapon', imageName: 'KuvaLichKarakSkin.png',       sources: KUVA_SRC },
-  { name: 'Kuva Kohm',         category: 'weapon', imageName: 'KuvaLichKohmSkin.png',        sources: KUVA_SRC },
-  { name: 'Kuva Ogris',        category: 'weapon', imageName: 'KuvaLichOgrisSkin.png',       sources: KUVA_SRC },
-  { name: 'Kuva Quartakk',     category: 'weapon', imageName: 'KuvaLichQuartakkSkin.png',    sources: KUVA_SRC },
-  { name: 'Kuva Sobek',        category: 'weapon', imageName: 'KuvaSobek.png',               sources: KUVA_SRC },
-  { name: 'Kuva Tonkor',       category: 'weapon', imageName: 'KuvaLichTonkorSkin.png',      sources: KUVA_SRC },
-  { name: 'Kuva Zarr',         category: 'weapon', imageName: 'KuvaZarr.png',                sources: KUVA_SRC },
-  { name: 'Kuva Brakk',        category: 'weapon', imageName: 'KuvaLichBrakkSkin.png',       sources: KUVA_SRC },
-  { name: 'Kuva Kraken',       category: 'weapon', imageName: 'KuvaLichKrakenSkin.png',      sources: KUVA_SRC },
-  { name: 'Kuva Nukor',        category: 'weapon', imageName: 'KuvaNukor.png',               sources: KUVA_SRC },
-  { name: 'Kuva Seer',         category: 'weapon', imageName: 'KuvaLichSeerSkin.png',        sources: KUVA_SRC },
-  { name: 'Kuva Twin Stubbas', category: 'weapon', imageName: 'KuvaLichStubbaSkin.png',      sources: KUVA_SRC },
-  { name: 'Kuva Shildeg',      category: 'weapon', imageName: 'GrnKuvaLichScytheWeapon.png', sources: KUVA_SRC },
-  { name: 'Kuva Ghoulsaw',     category: 'weapon', imageName: 'KuvaGhoulSaw.png',            sources: KUVA_SRC },
-  { name: 'Kuva Ayanga',       category: 'weapon', imageName: 'GrnHeavyGrenadeLauncher.png', sources: KUVA_SRC },
-  { name: 'Kuva Grattler',     category: 'weapon', imageName: 'KuvaGrattler.png',            sources: KUVA_SRC },
+  {
+    name: "Kuva Bramma",
+    category: "weapon",
+    imageName: "KuvaGrnBow.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Chakkhurr",
+    category: "weapon",
+    imageName: "GrnKuvaLichRifleWeapon.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Drakgoon",
+    category: "weapon",
+    imageName: "KuvaLichDrakgoonSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Hek",
+    category: "weapon",
+    imageName: "KuvaHek.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Hind",
+    category: "weapon",
+    imageName: "KuvaHind.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Karak",
+    category: "weapon",
+    imageName: "KuvaLichKarakSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Kohm",
+    category: "weapon",
+    imageName: "KuvaLichKohmSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Ogris",
+    category: "weapon",
+    imageName: "KuvaLichOgrisSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Quartakk",
+    category: "weapon",
+    imageName: "KuvaLichQuartakkSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Sobek",
+    category: "weapon",
+    imageName: "KuvaSobek.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Tonkor",
+    category: "weapon",
+    imageName: "KuvaLichTonkorSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Zarr",
+    category: "weapon",
+    imageName: "KuvaZarr.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Brakk",
+    category: "weapon",
+    imageName: "KuvaLichBrakkSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Kraken",
+    category: "weapon",
+    imageName: "KuvaLichKrakenSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Nukor",
+    category: "weapon",
+    imageName: "KuvaNukor.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Seer",
+    category: "weapon",
+    imageName: "KuvaLichSeerSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Twin Stubbas",
+    category: "weapon",
+    imageName: "KuvaLichStubbaSkin.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Shildeg",
+    category: "weapon",
+    imageName: "GrnKuvaLichScytheWeapon.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Ghoulsaw",
+    category: "weapon",
+    imageName: "KuvaGhoulSaw.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Ayanga",
+    category: "weapon",
+    imageName: "GrnHeavyGrenadeLauncher.png",
+    sources: KUVA_SRC,
+  },
+  {
+    name: "Kuva Grattler",
+    category: "weapon",
+    imageName: "KuvaGrattler.png",
+    sources: KUVA_SRC,
+  },
 
   // ── Tenet Weapons ─────────────────────────────────────────────────────────
-  { name: 'Tenet Arca Plasmor', category: 'weapon', imageName: 'CrpBEArcaPlasmor.png',        sources: TENET_SRC },
-  { name: 'Tenet Envoy',        category: 'weapon', imageName: 'CrpBriefcaseLauncher.png',    sources: TENET_SRC },
-  { name: 'Tenet Ferrox',       category: 'weapon', imageName: 'TenetFerrox.png',             sources: TENET_SRC },
-  { name: 'Tenet Flux Rifle',   category: 'weapon', imageName: 'CrpBEFluxRifle.png',          sources: TENET_SRC },
-  { name: 'Tenet Glaxion',      category: 'weapon', imageName: 'CrpBEGlaxion.png',            sources: TENET_SRC },
-  { name: 'Tenet Quanta',       category: 'weapon', imageName: 'TenetQuanta.png',             sources: TENET_SRC },
-  { name: 'Tenet Tetra',        category: 'weapon', imageName: 'CrpBETetra.png',              sources: TENET_SRC },
-  { name: 'Tenet Cycron',       category: 'weapon', imageName: 'CrpBECycron.png',             sources: TENET_SRC },
-  { name: 'Tenet Detron',       category: 'weapon', imageName: 'CrpBEDetron.png',             sources: TENET_SRC },
-  { name: 'Tenet Diplos',       category: 'weapon', imageName: 'CrpBriefcaseAkimboGun.png',   sources: TENET_SRC },
-  { name: 'Tenet Plinx',        category: 'weapon', imageName: 'TenetPlinx.png',              sources: TENET_SRC },
-  { name: 'Tenet Spirex',       category: 'weapon', imageName: 'CrpIgniterPistol.png',        sources: TENET_SRC },
-  { name: 'Tenet Agendus',      category: 'weapon', imageName: 'CrpHammerShield.png',         sources: TENET_SRC },
-  { name: 'Tenet Exec',         category: 'weapon', imageName: 'CrpBigSlash.png',             sources: TENET_SRC },
-  { name: 'Tenet Grigori',      category: 'weapon', imageName: 'CrpBriefcaseScythe.png',      sources: TENET_SRC },
-  { name: 'Tenet Livia',        category: 'weapon', imageName: 'CrpBriefcase2HKatana.png',    sources: TENET_SRC },
+  {
+    name: "Tenet Arca Plasmor",
+    category: "weapon",
+    imageName: "CrpBEArcaPlasmor.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Envoy",
+    category: "weapon",
+    imageName: "CrpBriefcaseLauncher.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Ferrox",
+    category: "weapon",
+    imageName: "TenetFerrox.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Flux Rifle",
+    category: "weapon",
+    imageName: "CrpBEFluxRifle.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Glaxion",
+    category: "weapon",
+    imageName: "CrpBEGlaxion.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Quanta",
+    category: "weapon",
+    imageName: "TenetQuanta.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Tetra",
+    category: "weapon",
+    imageName: "CrpBETetra.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Cycron",
+    category: "weapon",
+    imageName: "CrpBECycron.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Detron",
+    category: "weapon",
+    imageName: "CrpBEDetron.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Diplos",
+    category: "weapon",
+    imageName: "CrpBriefcaseAkimboGun.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Plinx",
+    category: "weapon",
+    imageName: "TenetPlinx.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Spirex",
+    category: "weapon",
+    imageName: "CrpIgniterPistol.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Agendus",
+    category: "weapon",
+    imageName: "CrpHammerShield.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Exec",
+    category: "weapon",
+    imageName: "CrpBigSlash.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Grigori",
+    category: "weapon",
+    imageName: "CrpBriefcaseScythe.png",
+    sources: TENET_SRC,
+  },
+  {
+    name: "Tenet Livia",
+    category: "weapon",
+    imageName: "CrpBriefcase2HKatana.png",
+    sources: TENET_SRC,
+  },
 
   // ── Carmine Weapons (Jade Shadows) ────────────────────────────────────────
   {
-    name: 'Carmine Penta', category: 'weapon', imageName: 'PentaCarmine.png',
-    sources: [{
-      mission: 'Ascension', planet: 'Uranus', type: 'Boss', rank: 1,
-      note: 'Blueprint drops from completing Jade\'s Ascension missions on Brutus (Uranus). Requires completing the Jade Shadows quest first.',
-    }],
+    name: "Carmine Penta",
+    category: "weapon",
+    imageName: "PentaCarmine.png",
+    sources: [
+      {
+        mission: "Ascension",
+        planet: "Uranus",
+        type: "Boss",
+        rank: 1,
+        note: "Blueprint drops from completing Jade's Ascension missions on Brutus (Uranus). Requires completing the Jade Shadows quest first.",
+      },
+    ],
   },
 
   // ── Coda Weapons (Warframe: 1999) ─────────────────────────────────────────
-  { name: 'Coda Bassocyst',  category: 'weapon', imageName: '1999InfShotgunWeapon.png', sources: CODA_SRC },
-  { name: 'Coda Bubonico',   category: 'weapon', imageName: 'CodaBubonico.png',         sources: CODA_SRC },
-  { name: 'Coda Hema',       category: 'weapon', imageName: 'CodaHema.png',             sources: CODA_SRC },
-  { name: 'Coda Sporothrix', category: 'weapon', imageName: 'CodaSporothrix.png',       sources: CODA_SRC },
-  { name: 'Coda Synapse',    category: 'weapon', imageName: 'CodaSynapse.png',          sources: CODA_SRC },
-  { name: 'Coda Catabolyst', category: 'weapon', imageName: 'CodaCatabolyst.png',       sources: CODA_SRC },
-  { name: 'Coda Pox',        category: 'weapon', imageName: 'CodaPox.png',              sources: CODA_SRC },
-  { name: 'Coda Tysis',      category: 'weapon', imageName: 'CodaTysis.png',            sources: CODA_SRC },
-  { name: 'Coda Caustacyst', category: 'weapon', imageName: 'CodaCaustacyst.png',       sources: CODA_SRC },
-  { name: 'Coda Hirudo',     category: 'weapon', imageName: 'CodaHirudo.png',           sources: CODA_SRC },
-  { name: 'Coda Mire',       category: 'weapon', imageName: 'CodaMire.png',             sources: CODA_SRC },
-  { name: 'Coda Motovore',   category: 'weapon', imageName: 'InfLichHammerWeapon.png',  sources: CODA_SRC },
-  { name: 'Coda Pathocyst',  category: 'weapon', imageName: 'CodaPathocyst.png',        sources: CODA_SRC },
+  {
+    name: "Coda Bassocyst",
+    category: "weapon",
+    imageName: "1999InfShotgunWeapon.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Bubonico",
+    category: "weapon",
+    imageName: "CodaBubonico.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Hema",
+    category: "weapon",
+    imageName: "CodaHema.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Sporothrix",
+    category: "weapon",
+    imageName: "CodaSporothrix.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Synapse",
+    category: "weapon",
+    imageName: "CodaSynapse.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Catabolyst",
+    category: "weapon",
+    imageName: "CodaCatabolyst.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Pox",
+    category: "weapon",
+    imageName: "CodaPox.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Tysis",
+    category: "weapon",
+    imageName: "CodaTysis.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Caustacyst",
+    category: "weapon",
+    imageName: "CodaCaustacyst.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Hirudo",
+    category: "weapon",
+    imageName: "CodaHirudo.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Mire",
+    category: "weapon",
+    imageName: "CodaMire.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Motovore",
+    category: "weapon",
+    imageName: "InfLichHammerWeapon.png",
+    sources: CODA_SRC,
+  },
+  {
+    name: "Coda Pathocyst",
+    category: "weapon",
+    imageName: "CodaPathocyst.png",
+    sources: CODA_SRC,
+  },
 
   // ── Kubrow ────────────────────────────────────────────────────────────────
   {
-    name: 'Huras Kubrow', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Collect a Kubrow Egg from breakable containers in Earth Forest missions. Hatch in the Orbiter Incubator using an Incubator Power Core. Breed is random — use Genetic Imprints to aim for a specific type. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Huras Kubrow",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Collect a Kubrow Egg from breakable containers in Earth Forest missions. Hatch in the Orbiter Incubator using an Incubator Power Core. Breed is random — use Genetic Imprints to aim for a specific type. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
   {
-    name: 'Sahasa Kubrow', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Kubrow Eggs drop from breakable containers in Earth Forest missions. Random breed on hatch; use matching Genetic Imprints to steer toward Sahasa. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Sahasa Kubrow",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Kubrow Eggs drop from breakable containers in Earth Forest missions. Random breed on hatch; use matching Genetic Imprints to steer toward Sahasa. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
   {
-    name: 'Raksa Kubrow', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Kubrow Eggs drop from breakable containers in Earth Forest missions. Use Raksa Genetic Imprints to increase the chance. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Raksa Kubrow",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Kubrow Eggs drop from breakable containers in Earth Forest missions. Use Raksa Genetic Imprints to increase the chance. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
   {
-    name: 'Sunika Kubrow', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Kubrow Eggs drop from breakable containers in Earth Forest missions. Use Sunika Genetic Imprints. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Sunika Kubrow",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Kubrow Eggs drop from breakable containers in Earth Forest missions. Use Sunika Genetic Imprints. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
   {
-    name: 'Chesa Kubrow', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Kubrow Eggs drop from breakable containers in Earth Forest missions. Use Chesa Genetic Imprints. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Chesa Kubrow",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Kubrow Eggs drop from breakable containers in Earth Forest missions. Use Chesa Genetic Imprints. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
   {
-    name: 'Helminth Charger', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Hatched from the Helminth Cyst. Let an infected Kubrow gestate in the Incubator — the cyst randomly appears after sleeping in your Orbiter for ~12 hours. Alternatively, have another player\'s Helminth cough on you during a mission, then sleep. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Helminth Charger",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Hatched from the Helminth Cyst. Let an infected Kubrow gestate in the Incubator — the cyst randomly appears after sleeping in your Orbiter for ~12 hours. Alternatively, have another player's Helminth cough on you during a mission, then sleep. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
 
   // ── Kavat ─────────────────────────────────────────────────────────────────
   {
-    name: 'Adarza Kavat', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Collect 10 Kavat Genetic Codes (scan feral Kavats in Orokin Derelict missions — use Codex/Synthesis Scanner on the Kavat\'s back). Hatch in Incubator. Breed is random between Adarza and Smeeta. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Adarza Kavat",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Collect 10 Kavat Genetic Codes (scan feral Kavats in Orokin Derelict missions — use Codex/Synthesis Scanner on the Kavat's back). Hatch in Incubator. Breed is random between Adarza and Smeeta. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
   {
-    name: 'Smeeta Kavat', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Orbiter', type: 'Companion', rank: 1,
-      note: 'Collect 10 Kavat Genetic Codes from feral Kavats in Orokin Derelict missions (scan their back with a Codex Scanner). Hatch in Incubator — 50/50 chance of Adarza vs Smeeta. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Smeeta Kavat",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Orbiter",
+        type: "Companion",
+        rank: 1,
+        note: "Collect 10 Kavat Genetic Codes from feral Kavats in Orokin Derelict missions (scan their back with a Codex Scanner). Hatch in Incubator — 50/50 chance of Adarza vs Smeeta. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
   {
-    name: 'Vasca Kavat', category: 'companion',
-    sources: [{ mission: 'Incubator', planet: 'Earth', type: 'Companion', rank: 1,
-      note: 'Go to Plains of Eidolon at night. Let a Vasca Kavat (glowing feral Kavat) scratch you to become infected. Return to Orbiter and let the Vasca strain incubate (sleep in Orbiter). Then use a Kavat Genetic Code + Incubator to hatch. Gives 3,000 mastery XP at rank 30.' }],
+    name: "Vasca Kavat",
+    category: "companion",
+    sources: [
+      {
+        mission: "Incubator",
+        planet: "Earth",
+        type: "Companion",
+        rank: 1,
+        note: "Go to Plains of Eidolon at night. Let a Vasca Kavat (glowing feral Kavat) scratch you to become infected. Return to Orbiter and let the Vasca strain incubate (sleep in Orbiter). Then use a Kavat Genetic Code + Incubator to hatch. Gives 3,000 mastery XP at rank 30.",
+      },
+    ],
   },
 
   // ── Zariman Ten Zero ──────────────────────────────────────────────────────
   {
-    name: 'Voidplume Down', category: 'resource', imageName: 'VoidplumeDown.png',
-    sources: [{ planet: 'Zariman Ten Zero', mission: 'Any', type: 'Exploration', rank: 1,
-      note: 'Common — 8 spawn locations per mission, 75% chance each. Search side rooms, vent shafts, and hidden corridors. Worth 500 Holdfasts standing.' }],
-  },
-  {
-    name: 'Voidplume Vane', category: 'resource', imageName: 'VoidplumeVane.png',
-    sources: [{ planet: 'Zariman Ten Zero', mission: 'Any', type: 'Exploration', rank: 1,
-      note: 'Uncommon — 25% chance from the 8 spawn locations, plus 2 guaranteed per mission. Worth 1,000 Holdfasts standing.' }],
-  },
-  {
-    name: 'Voidplume Crest', category: 'resource', imageName: 'VoidplumeCrest.png',
-    sources: [{ planet: 'Zariman Ten Zero', mission: 'Any', type: 'Exploration', rank: 1,
-      note: 'Rare — 1 guaranteed spawn per mission. Check high-up ledges and secret alcoves. Worth 2,000 Holdfasts standing.' }],
-  },
-  {
-    name: 'Voidplume Quill', category: 'resource', imageName: 'VoidplumeQuill.png',
-    sources: [{ planet: 'Zariman Ten Zero', mission: 'Any', type: 'Bounty', rank: 2,
-      note: 'Collect Zarium Accolades (large golden objects in terminal rooms) and deliver them to Cephalon Melica\'s kiosks — rewards up to 3 Quills per mission. Also awarded from Tier 4-5 Holdfasts bounties. Worth 2,500 standing.' }],
-  },
-  {
-    name: 'Voidplume Pinion', category: 'resource', imageName: 'VoidplumePinion.png',
-    sources: [{ planet: 'Zariman Ten Zero', mission: 'Any', type: 'Boss', rank: 3,
-      note: 'Rare — drops from Dormant Void Angels (1 guaranteed per angel). Void Angels appear on all Zariman missions once you unlock them. Worth 5,000 Holdfasts standing.' }],
-  },
-  {
-    name: 'Entrati Lanthorn', category: 'resource', imageName: 'EntratiLanthorn.png',
+    name: "Voidplume Down",
+    category: "resource",
+    imageName: "VoidplumeDown.png",
     sources: [
-      { planet: 'Zariman Ten Zero', mission: 'Any', type: 'Mission Reward', rank: 1,
-        note: '~10% chance from mission end rewards. Also guaranteed from Netracell runs on Deimos and from killing Gruzzlings in Albrecht\'s Laboratories (Sanctum Anatomica). Required to craft Dante, Gyre, Qorvex, Styanax, and several weapons.' },
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Exploration",
+        rank: 1,
+        note: "Common — 8 spawn locations per mission, 75% chance each. Search side rooms, vent shafts, and hidden corridors. Worth 500 Holdfasts standing.",
+      },
+    ],
+  },
+  {
+    name: "Voidplume Vane",
+    category: "resource",
+    imageName: "VoidplumeVane.png",
+    sources: [
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Exploration",
+        rank: 1,
+        note: "Uncommon — 25% chance from the 8 spawn locations, plus 2 guaranteed per mission. Worth 1,000 Holdfasts standing.",
+      },
+    ],
+  },
+  {
+    name: "Voidplume Crest",
+    category: "resource",
+    imageName: "VoidplumeCrest.png",
+    sources: [
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Exploration",
+        rank: 1,
+        note: "Rare — 1 guaranteed spawn per mission. Check high-up ledges and secret alcoves. Worth 2,000 Holdfasts standing.",
+      },
+    ],
+  },
+  {
+    name: "Voidplume Quill",
+    category: "resource",
+    imageName: "VoidplumeQuill.png",
+    sources: [
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Bounty",
+        rank: 2,
+        note: "Collect Zarium Accolades (large golden objects in terminal rooms) and deliver them to Cephalon Melica's kiosks — rewards up to 3 Quills per mission. Also awarded from Tier 4-5 Holdfasts bounties. Worth 2,500 standing.",
+      },
+    ],
+  },
+  {
+    name: "Voidplume Pinion",
+    category: "resource",
+    imageName: "VoidplumePinion.png",
+    sources: [
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Boss",
+        rank: 3,
+        note: "Rare — drops from Dormant Void Angels (1 guaranteed per angel). Void Angels appear on all Zariman missions once you unlock them. Worth 5,000 Holdfasts standing.",
+      },
+    ],
+  },
+  {
+    name: "Entrati Lanthorn",
+    category: "resource",
+    imageName: "EntratiLanthorn.png",
+    sources: [
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Mission Reward",
+        rank: 1,
+        note: "~10% chance from mission end rewards. Also guaranteed from Netracell runs on Deimos and from killing Gruzzlings in Albrecht's Laboratories (Sanctum Anatomica). Required to craft Dante, Gyre, Qorvex, Styanax, and several weapons.",
+      },
     ],
   },
 
   // ── Sanctum Anatomica (Albrecht's Laboratories) ───────────────────────────
   {
-    name: 'Shrill Voca', category: 'resource', imageName: 'ShrillVoca.png',
-    sources: [{ planet: 'Deimos', mission: "Albrecht's Labs", type: 'Exploration', rank: 1,
-      note: 'Syndicate Medallion equivalent for the Cavia faction — 5 spawn locations per mission, 75% chance each. Used to rank up Cavia (ranks 1-3) and craft the Ekhein melee weapon.' }],
+    name: "Shrill Voca",
+    category: "resource",
+    imageName: "ShrillVoca.png",
+    sources: [
+      {
+        planet: "Deimos",
+        mission: "Albrecht's Labs",
+        type: "Exploration",
+        rank: 1,
+        note: "Syndicate Medallion equivalent for the Cavia faction — 5 spawn locations per mission, 75% chance each. Used to rank up Cavia (ranks 1-3) and craft the Ekhein melee weapon.",
+      },
+    ],
   },
   {
-    name: 'Bellow Voca', category: 'resource', imageName: 'BellowVoca.png',
-    sources: [{ planet: 'Deimos', mission: "Albrecht's Labs", type: 'Exploration', rank: 1,
-      note: '2 guaranteed spawns per mission (10 on Steel Path). Used to rank up Cavia (ranks 3-4) and craft Dante Neuroptics and Ruvox components.' }],
+    name: "Bellow Voca",
+    category: "resource",
+    imageName: "BellowVoca.png",
+    sources: [
+      {
+        planet: "Deimos",
+        mission: "Albrecht's Labs",
+        type: "Exploration",
+        rank: 1,
+        note: "2 guaranteed spawns per mission (10 on Steel Path). Used to rank up Cavia (ranks 3-4) and craft Dante Neuroptics and Ruvox components.",
+      },
+    ],
   },
   {
-    name: 'Echo Voca', category: 'resource', imageName: 'EchoVoca.png',
-    sources: [{ planet: 'Deimos', mission: "Albrecht's Labs", type: 'Exploration', rank: 2,
-      note: '1 guaranteed spawn per mission. Gruzzlings in non-Disruption missions may also drop one. Used to rank up Cavia (ranks 4-5) and craft Qorvex, Grimoire, Mandonel, and Ruvox.' }],
+    name: "Echo Voca",
+    category: "resource",
+    imageName: "EchoVoca.png",
+    sources: [
+      {
+        planet: "Deimos",
+        mission: "Albrecht's Labs",
+        type: "Exploration",
+        rank: 2,
+        note: "1 guaranteed spawn per mission. Gruzzlings in non-Disruption missions may also drop one. Used to rank up Cavia (ranks 4-5) and craft Qorvex, Grimoire, Mandonel, and Ruvox.",
+      },
+    ],
   },
 ];
