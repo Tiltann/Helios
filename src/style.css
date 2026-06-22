@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
 html, body {
-  background: #07090f;
+  background: #050609;
 }
+
+/* Orokin gold scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #08090f; }
+::-webkit-scrollbar-thumb { background: #1c2040; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212,168,76,0.35); }
+
+input::placeholder { color: #384060; }
 
 /* Item expansion - spring enter, quick leave */
 .slide-enter-active {

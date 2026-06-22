@@ -13,6 +13,7 @@ export interface Source {
   type: string;
   note?: string;
   rank: number;
+  mr?: number;
 }
 
 export interface Item {
@@ -102,7 +103,6 @@ export const PLANETS: Record<
     abbr: "DMO",
     img: "EntratiFragmentUncommonA.png",
   },
-  Derelict: { color: "#5c6c4c", abbr: "DER" },
   "Zariman Ten Zero": {
     color: "#a4a4d4",
     abbr: "ZAR",
@@ -234,12 +234,6 @@ export const ITEMS: Item[] = [
     sources: [
       { mission: "Apollodorus", planet: "Mercury", type: "Survival", rank: 1 },
       { mission: "Tikal", planet: "Earth", type: "Excavation", rank: 2 },
-      {
-        mission: "Orokin Derelict",
-        planet: "Derelict",
-        type: "Survival",
-        rank: 3,
-      },
     ],
   },
   {
@@ -477,15 +471,22 @@ export const ITEMS: Item[] = [
         mission: "Nightwave Store",
         planet: "Any",
         type: "Vendor",
-        note: "Nightwave shop is the most reliable way to get it",
+        note: "Always available in the Nightwave Offerings for 15 Nightwave Cred per 5 — the most reliable source. Resource Extractors do NOT drop Nitain.",
         rank: 1,
       },
       {
-        mission: "Resource Drones",
+        mission: "Reactor Sabotage / Exterminate",
         planet: "Any",
-        type: "Extractor",
-        note: "Deploy Extractors on any Grineer planet",
+        type: "Resource Cache",
+        note: "0.67–2% drop chance from finding all three hidden caches in Reactor Sabotage and certain Exterminate missions. Very low rate — use only when Nightwave Cred is exhausted.",
         rank: 2,
+      },
+      {
+        mission: "Predasite Assassination (Hyf)",
+        planet: "Deimos",
+        type: "Boss",
+        note: "Small chance from the Predasite boss on Deimos. Also rarely from Ghoul Purge bounties on Ceres when that event is active.",
+        rank: 3,
       },
     ],
   },
@@ -566,10 +567,10 @@ export const ITEMS: Item[] = [
     imageName: "ash.png",
     sources: [
       {
-        mission: "Uranus missions",
-        planet: "Uranus",
-        type: "Survival",
-        note: "Parts drop from Grineer Manics. Higher level missions like Ophelia have more of them.",
+        mission: "Neptune Proxima / Pluto Proxima / Venus Proxima",
+        planet: "Railjack",
+        type: "Railjack",
+        note: "Neuroptics from Neptune Proxima Defense/Survival (Rotation A, 12.5%). Chassis from Pluto Proxima Defense/Survival (Rotation A, 13.33%). Systems from Venus Proxima Defense/Survival (Rotation A, 13.33%). The old Grineer Manic drop method was removed in Update 29.10. Also earnable through The Circuit after completing The Duviri Paradox.",
         rank: 1,
       },
     ],
@@ -636,10 +637,10 @@ export const ITEMS: Item[] = [
     imageName: "chroma.png",
     sources: [
       {
-        mission: "The New Strange Quest",
+        mission: "The New Strange Quest + Junctions",
         planet: "Any",
         type: "Quest",
-        note: "Blueprint from the quest itself. Components come from completing Void Defense, Orokin Derelict Survival, and Orokin Derelict Defense rotations.",
+        note: "Main blueprint from completing The New Strange quest. Neuroptics from the Uranus Junction reward, Chassis from the Neptune Junction, Systems from the Pluto Junction. Alternatively buy all blueprints from Cephalon Simaris for Standing (25,000 per component, 50,000 for main). Also earnable through The Circuit after completing The Duviri Paradox.",
         rank: 1,
       },
     ],
@@ -846,7 +847,7 @@ export const ITEMS: Item[] = [
         mission: "Kappa",
         planet: "Sedna",
         type: "Disruption",
-        note: "All parts come from rotation B and C.",
+        note: "All three component blueprints drop from Rotation A at 7.84% each per round. Run multiple rounds before extracting — expect ~12 A-rotations on average per component.",
         rank: 1,
       },
     ],
@@ -934,6 +935,7 @@ export const ITEMS: Item[] = [
         type: "Assassination",
         note: "Councilor Vay Hek boss fight. Requires Oro node unlocked.",
         rank: 1,
+        mr: 5,
       },
     ],
   },
@@ -1106,7 +1108,7 @@ export const ITEMS: Item[] = [
         mission: "Mutalist Alad V",
         planet: "Eris",
         type: "Assassination",
-        note: "Requires Mutalist Coordinates key to access. Get the key from Infested Invasion rewards.",
+        note: "Craft a Mutalist Alad V Assassinate Key from 10 Nav Coordinates (see the Mutalist Alad V Nav Coordinate resource entry). Nav Coordinates drop from Hyf Defense on Deimos (Rotation B) and Terrorem Survival (Rotation B). The key lets you fight Mutalist Alad V on Eris.",
         rank: 1,
       },
     ],
@@ -1131,10 +1133,10 @@ export const ITEMS: Item[] = [
     imageName: "nekros.png",
     sources: [
       {
-        mission: "Orokin Derelict Assassination",
-        planet: "Derelict",
+        mission: "Magnacidium",
+        planet: "Deimos",
         type: "Assassination",
-        note: "Lephantis boss, needs a Derelict Assassination key to access.",
+        note: "Lephantis boss. The Orokin Derelict no longer exists as a separate planet — Lephantis is now accessed via Magnacidium on Deimos. All three component blueprints drop at 33.33% each. Also earnable through The Circuit after completing The Duviri Paradox.",
         rank: 1,
       },
     ],
@@ -1161,10 +1163,10 @@ export const ITEMS: Item[] = [
     spoilerFor: "The Glast Gambit",
     sources: [
       {
-        mission: "Infested Salvage",
+        mission: "Oestrus",
         planet: "Eris",
-        type: "Rotation C",
-        note: "Complete The Glast Gambit quest first to unlock the mode.",
+        type: "Infested Salvage",
+        note: "Parts drop from Rotation C of Infested Salvage. Complete The Glast Gambit quest first to unlock the mission type. Blueprint (11.28%), Neuroptics (11.28%), Chassis (11.28%), Systems (7.52%) — all from Rotation C.",
         rank: 1,
       },
     ],
@@ -1215,7 +1217,7 @@ export const ITEMS: Item[] = [
         mission: "Phorid Assassination",
         planet: "Any",
         type: "Invasion",
-        note: "Phorid spawns during Infested Invasions. Check the Alerts tab for active nodes. Parts also drop from the Assassination node on Phorid's home planet.",
+        note: "Phorid only spawns during Infested Invasions — there is no permanent assassination node. Check the Alerts/Invasions tab for active nodes. All three component blueprints drop from him.",
         rank: 1,
       },
     ],
@@ -1226,10 +1228,10 @@ export const ITEMS: Item[] = [
     imageName: "oberon.png",
     sources: [
       {
-        mission: "Any Grineer mission",
-        planet: "Any",
-        type: "Enemy Drop",
-        note: "Parts drop from Eximus enemies across all Grineer missions. Survival and Defense have the most Eximus spawns.",
+        mission: "Earth Proxima / Saturn Proxima",
+        planet: "Railjack",
+        type: "Railjack",
+        note: "Neuroptics and Systems from Earth Proxima Points of Interest (10% each). Chassis from Saturn Proxima Points of Interest (10%). Points of Interest are side objectives inside derelict ships during Proxima missions. The old Eximus enemy drop method was removed in Update 29.10. Also earnable through The Circuit.",
         rank: 1,
       },
     ],
@@ -1245,15 +1247,22 @@ export const ITEMS: Item[] = [
         mission: "Lua Music Puzzle",
         planet: "Lua",
         type: "Cache / Puzzle",
-        note: "Chassis comes from the hidden music room puzzle on Orokin Moon. Lua is unlocked after The Second Dream.",
+        note: "Chassis from the hidden music room on Lua — find the secret room, interact with all the instruments in the correct order. Lua unlocks after The Second Dream.",
         rank: 1,
       },
       {
-        mission: "Orokin Derelict",
-        planet: "Derelict",
-        type: "Rotation C",
-        note: "Systems drop from the rotation C cache.",
+        mission: "Terrorem",
+        planet: "Deimos",
+        type: "Survival",
+        note: "Neuroptics Blueprint drops from Rotation C at 22.56%. Stay until 20 minutes.",
         rank: 2,
+      },
+      {
+        mission: "Plato",
+        planet: "Lua",
+        type: "Exterminate",
+        note: "Systems Blueprint drops from resource cache Rotation A at 22.56%. Search all three caches in the mission.",
+        rank: 3,
       },
     ],
   },
@@ -1446,7 +1455,7 @@ export const ITEMS: Item[] = [
         mission: "The Silver Grove Quest",
         planet: "Any",
         type: "Quest",
-        note: "Some parts come from the quest itself, others from Orokin Derelict bounties.",
+        note: "Main blueprint and all component blueprints come directly from completing The Silver Grove quest — no Orokin Derelict required. Alternatively buy from Cephalon Simaris (25,000 Standing per component, 50,000 for main), or earn through The Circuit.",
         rank: 1,
       },
     ],
@@ -1502,6 +1511,20 @@ export const ITEMS: Item[] = [
     ],
   },
   {
+    name: "Valkyr",
+    category: "warframe",
+    imageName: "valkyr.png",
+    sources: [
+      {
+        mission: "Themisto",
+        planet: "Jupiter",
+        type: "Assassination",
+        note: "Alad V boss fight. All three component blueprints drop from Alad V at 38.72% each (Neuroptics, Chassis, Systems). The main blueprint comes from completing the mission. Alad V is also the source of Neural Sensors.",
+        rank: 1,
+      },
+    ],
+  },
+  {
     name: "Volt",
     category: "warframe",
     imageName: "volt.png",
@@ -1521,11 +1544,18 @@ export const ITEMS: Item[] = [
     imageName: "voruna.png",
     sources: [
       {
-        mission: "Conjunction Survival (Yuvarium/Circulus)",
+        mission: "Yuvarium / Circulus",
         planet: "Lua",
-        type: "Survival",
-        note: "Parts drop from Rotation C. Requires The War Within quest. Buy from Yonta on the Zariman with Lua Thrax Plasm as an alternative.",
+        type: "Conjunction Survival",
+        note: "Parts drop from Rotation C. Requires The War Within quest to access Lua.",
         rank: 1,
+      },
+      {
+        mission: "Archimedean Yonta (Chrysalith)",
+        planet: "Zariman Ten Zero",
+        type: "Vendor",
+        note: "Buy blueprints with Lua Thrax Plasm: 75 per component, 125 for main blueprint (350 total). Lua Thrax Plasm drops from Hollow/Eclipse Thrax enemies in Conjunction Survival and from rotation rewards.",
+        rank: 2,
       },
     ],
   },
@@ -1805,9 +1835,9 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Orokin Vault",
-        planet: "Derelict",
+        planet: "Deimos",
         type: "Corrupted Vault",
-        note: "Bring a Dragon Key. Opening the vault gives a random corrupted mod each time.",
+        note: "Bring a Dragon Key (build in Foundry). Orokin Vaults appear in all Deimos missions that use the Orokin Derelict tileset (any mission except Defense, Assassination, and open-world Landscape). One vault per mission. Opening it drops a random corrupted mod.",
         rank: 1,
       },
     ],
@@ -1819,9 +1849,9 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Orokin Vault",
-        planet: "Derelict",
+        planet: "Deimos",
         type: "Corrupted Vault",
-        note: "Bring a Dragon Key. Opening the vault gives a random corrupted mod each time.",
+        note: "Bring a Dragon Key. One vault per Deimos mission (Orokin Derelict tileset). Opening gives a random corrupted mod — there are 16 total, so target farming a specific one will take many runs.",
         rank: 1,
       },
     ],
@@ -1833,9 +1863,9 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Orokin Vault",
-        planet: "Derelict",
+        planet: "Deimos",
         type: "Corrupted Vault",
-        note: "Bring a Dragon Key. Opening the vault gives a random corrupted mod each time.",
+        note: "Bring a Dragon Key. One vault per Deimos mission (Orokin Derelict tileset). Opening gives a random corrupted mod.",
         rank: 1,
       },
     ],
@@ -1847,9 +1877,9 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Orokin Vault",
-        planet: "Derelict",
+        planet: "Deimos",
         type: "Corrupted Vault",
-        note: "Bring a Dragon Key. Opening the vault gives a random corrupted mod each time.",
+        note: "Bring a Dragon Key. One vault per Deimos mission (Orokin Derelict tileset). Opening gives a random corrupted mod.",
         rank: 1,
       },
     ],
@@ -1861,9 +1891,9 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Orokin Vault",
-        planet: "Derelict",
+        planet: "Deimos",
         type: "Corrupted Vault",
-        note: "Bring a Dragon Key. Opening the vault gives a random corrupted mod each time.",
+        note: "Bring a Dragon Key. One vault per Deimos mission (Orokin Derelict tileset). Opening gives a random corrupted mod.",
         rank: 1,
       },
     ],
@@ -2112,14 +2142,22 @@ export const ITEMS: Item[] = [
     name: "Gara Prime",
     category: "prime",
     ducats: 65,
+    vaulted: true,
     wikiSlug: "Gara/Prime",
     sources: [
       {
-        mission: "Axi G7, Lith G8, Meso G6, Neo G5",
+        mission: "Various relics (all vaulted)",
         planet: "Void",
         type: "Void Fissure",
-        note: "Blueprint: Axi G7 (rare). Neuroptics: Lith G8 (rare). Chassis: Meso G6 (rare). Systems: Neo G5 (rare).",
+        note: "All relics are currently vaulted. Blueprint: Lith G11, Meso G3, Neo G4, Axi G6/G9. Chassis: Neo P5, Lith K6, Meso A4. Neuroptics: Lith S12, Neo N18, Meso C10. Systems: Meso K5, Axi G7, Neo N21. Relics return during Prime Resurgence.",
         rank: 1,
+      },
+      {
+        mission: "Trade chat",
+        planet: "Any",
+        type: "Special",
+        note: "warframe.market for quick part purchases while vaulted.",
+        rank: 2,
       },
     ],
   },
@@ -2785,6 +2823,20 @@ export const ITEMS: Item[] = [
     imageName: "CodaPathocyst.png",
     sources: CODA_SRC,
   },
+  {
+    name: "Dual Coda Torxica",
+    category: "weapon",
+    sources: [
+      {
+        mission: "Eleanor (The Hex)",
+        planet: "Höllvania",
+        type: "Vendor",
+        rank: 1,
+        mr: 17,
+        note: "Purchase from Eleanor at The Hex Syndicate hub for 10 Live Heartcells. Live Heartcells drop from defeating Technocyte Coda adversaries. The weapon cycles through Eleanor's shop every 4 days and comes with a random progenitor bonus damage type (25–60%). Requires completing The Hex quest.",
+      },
+    ],
+  },
 
   // ── Kubrow ────────────────────────────────────────────────────────────────
   {
@@ -2876,7 +2928,7 @@ export const ITEMS: Item[] = [
         planet: "Orbiter",
         type: "Companion",
         rank: 1,
-        note: "Collect 10 Kavat Genetic Codes (scan feral Kavats in Orokin Derelict missions — use Codex/Synthesis Scanner on the Kavat's back). Hatch in Incubator. Breed is random between Adarza and Smeeta. Gives 3,000 mastery XP at rank 30.",
+        note: "Collect 10 Kavat Genetic Codes by scanning Feral Kavats in Deimos missions on the Orokin Derelict tileset (Horend Capture, Phlegyas Exterminate, or Formido Sabotage). Use a Codex or Synthesis Scanner on the Kavat's back. Breed is random between Adarza and Smeeta on hatch. Gives 3,000 mastery XP at rank 30.",
       },
     ],
   },
@@ -2889,7 +2941,7 @@ export const ITEMS: Item[] = [
         planet: "Orbiter",
         type: "Companion",
         rank: 1,
-        note: "Collect 10 Kavat Genetic Codes from feral Kavats in Orokin Derelict missions (scan their back with a Codex Scanner). Hatch in Incubator — 50/50 chance of Adarza vs Smeeta. Gives 3,000 mastery XP at rank 30.",
+        note: "Collect 10 Kavat Genetic Codes by scanning Feral Kavats in Deimos missions on the Orokin Derelict tileset (Horend, Phlegyas, or Formido). Hatch in Incubator — 50/50 chance of Adarza vs Smeeta. Gives 3,000 mastery XP at rank 30.",
       },
     ],
   },
@@ -2992,6 +3044,86 @@ export const ITEMS: Item[] = [
       },
     ],
   },
+  {
+    name: "Thrax Plasm",
+    category: "resource",
+    sources: [
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Enemy Drop",
+        rank: 1,
+        note: "Drops from Thrax Centurion and Thrax Legatus enemies (6 Plasm guaranteed per kill). Also rewarded from high-tier Zariman bounties (levels 90-95 and 110-115). Used to rank up The Holdfasts syndicate and craft Gyre, Styanax, the Alternox rifle, and Archon Shard Helminth segments.",
+      },
+    ],
+  },
+  {
+    name: "Lua Thrax Plasm",
+    category: "resource",
+    sources: [
+      {
+        planet: "Lua",
+        mission: "Yuvarium / Circulus",
+        type: "Conjunction Survival",
+        rank: 1,
+        note: "Drops from Hollow Thrax Centurion, Eclipse Thrax Centurion, Hollow Thrax Legatus, and Lua Thrax Legatus enemies (30% drop rate each). Also drops as a guaranteed rotation reward. Used to buy Voruna blueprints from Archimedean Yonta on the Chrysalith (75 Plasm per component, 125 for main blueprint). Requires The War Within to access Lua.",
+      },
+    ],
+  },
+
+  // ── Orb Vallis Toroids ────────────────────────────────────────────────────
+  {
+    name: "Calda Toroid",
+    category: "resource",
+    sources: [
+      {
+        mission: "Enrichment Labs",
+        planet: "Orb Vallis",
+        type: "Enemy Drop",
+        note: "Best method: kill Scyto Raknoids near the Enrichment Labs (~20% drop rate, ~5 kills per toroid). Trigger a Reinforcement Beacon at the Labs for a steady enemy stream. Also drops from Profit-Taker Bounty Phase 2 (12.5% chance for 3x — requires Old Mate rank with Solaris United). Used for Vox Solaris standing and various crafting recipes.",
+        rank: 1,
+      },
+    ],
+  },
+  {
+    name: "Sola Toroid",
+    category: "resource",
+    sources: [
+      {
+        mission: "Temple of Profit",
+        planet: "Orb Vallis",
+        type: "Enemy Drop",
+        note: "Best method: kill Kyta Raknoids near the Temple of Profit (~20% drop rate). Also drops from Profit-Taker Bounty Phase 3 (12.5% for 3x — requires Old Mate rank). Can also be found in Orb Vallis caves around the Temple area.",
+        rank: 1,
+      },
+    ],
+  },
+  {
+    name: "Vega Toroid",
+    category: "resource",
+    sources: [
+      {
+        mission: "Spaceport / Caves",
+        planet: "Orb Vallis",
+        type: "Enemy Drop",
+        note: "Very rare from enemies — Mite Raknoids and Spaceport enemies drop at ~1-2%. Best obtained from Profit-Taker Bounty Phase 1 (12.5% for 3x — requires Old Mate rank) or by collecting from Orb Vallis caves. Used for Vox Solaris standing.",
+        rank: 1,
+      },
+    ],
+  },
+  {
+    name: "Crisma Toroid",
+    category: "resource",
+    sources: [
+      {
+        mission: "Profit-Taker Orb",
+        planet: "Orb Vallis",
+        type: "Boss",
+        note: "Exclusive drop from the Profit-Taker Orb boss (Phase 4 bounty from Eudico in Fortuna). Requires Rank 5: Old Mate with Solaris United. Worth 6,000 Vox Solaris standing each — the highest-value Toroid.",
+        rank: 1,
+      },
+    ],
+  },
 
   // ── Sanctum Anatomica (Albrecht's Laboratories) ───────────────────────────
   {
@@ -3033,6 +3165,191 @@ export const ITEMS: Item[] = [
         type: "Exploration",
         rank: 2,
         note: "1 guaranteed spawn per mission. Gruzzlings in non-Disruption missions may also drop one. Used to rank up Cavia (ranks 4-5) and craft Qorvex, Grimoire, Mandonel, and Ruvox.",
+      },
+    ],
+  },
+
+  // ── Deimos / Albrecht's Labs ──────────────────────────────────────────────
+  {
+    name: "Necracoil",
+    category: "resource",
+    sources: [
+      {
+        planet: "Deimos",
+        mission: "Albrecht's Labs",
+        type: "Enemy Drop",
+        rank: 1,
+        note: "Drops from Jugulus and Saxum variants (exocrine enemies) in Albrecht's Labs on Deimos at ~20% per kill. Also from resource caches in Labs missions. Used for Cavia rank-up offerings and to craft Dante and Ruvox components. Requires Angels of the Zariman quest to access the Labs.",
+      },
+    ],
+  },
+
+  // ── Jupiter ───────────────────────────────────────────────────────────────
+  {
+    name: "Hexenon",
+    category: "resource",
+    sources: [
+      {
+        planet: "Jupiter",
+        mission: "Ganymede",
+        type: "Disruption",
+        rank: 1,
+        note: "Best source: Disruption on Ganymede (Jupiter). Amalgam enemies drop Hexenon at ~20% per kill; complete demolysts for bonus drops. Also drops from standard Jupiter enemies at low rates in any mission. Used for the Wisp blueprint and various crafting recipes.",
+      },
+    ],
+  },
+
+  // ── Mars / Uranus ─────────────────────────────────────────────────────────
+  {
+    name: "Gallium",
+    category: "resource",
+    sources: [
+      {
+        planet: "Uranus",
+        mission: "Desdemona",
+        type: "Sabotage",
+        rank: 1,
+        note: "Best farm: Desdemona Sabotage on Uranus or Ophelia Survival on Uranus. Gallium is a rare drop from Grineer enemies on Mars and Uranus — approximately 2.5–3% per enemy kill. Also found in resource caches. Dark Sector bonuses on Mars (Kadesh) improve drop rates.",
+      },
+    ],
+  },
+
+  // ── Railjack / Proxima resources ─────────────────────────────────────────
+  {
+    name: "Asterite",
+    category: "resource",
+    sources: [
+      {
+        planet: "Railjack",
+        mission: "Saturn Proxima / Earth Proxima",
+        type: "Railjack",
+        rank: 1,
+        note: "Resource found in Railjack Proxima missions. Asterite drops from enemies and containers in Saturn Proxima and Earth Proxima. Used for crafting Railjack gear, components, and Avionics. Collect with Railjack Granum Void or standard pick-up while on missions.",
+      },
+    ],
+  },
+  {
+    name: "Gallos Rods",
+    category: "resource",
+    sources: [
+      {
+        planet: "Railjack",
+        mission: "Grineer Proxima missions",
+        type: "Railjack",
+        rank: 1,
+        note: "Drops from Grineer enemies and containers in Proxima missions (Earth, Saturn, Veil Proxima). Used to craft Railjack parts and upgrades. Collected inside enemy crewships and resource containers during missions.",
+      },
+    ],
+  },
+  {
+    name: "Isos",
+    category: "resource",
+    sources: [
+      {
+        planet: "Railjack",
+        mission: "Corpus Proxima missions",
+        type: "Railjack",
+        rank: 1,
+        note: "Drops from Corpus enemies and containers in Corpus Proxima missions (Venus, Neptune, Pluto Proxima). Used for crafting Corpus Railjack components and Avionics. Primarily collected from enemy crewships and resource containers.",
+      },
+    ],
+  },
+  {
+    name: "Cubic Diodes",
+    category: "resource",
+    sources: [
+      {
+        planet: "Railjack",
+        mission: "Corpus Proxima missions",
+        type: "Railjack",
+        rank: 1,
+        note: "Drops from Corpus Proxima enemies and containers (Venus, Neptune, Pluto Proxima). Also a rare drop from Eximus enemies on Europa in standard missions. Used for crafting Corpus-related Railjack parts.",
+      },
+    ],
+  },
+
+  // ── Zariman ───────────────────────────────────────────────────────────────
+  {
+    name: "Voidgel Orb",
+    category: "resource",
+    sources: [
+      {
+        planet: "Zariman Ten Zero",
+        mission: "Any",
+        type: "Enemy Drop",
+        rank: 1,
+        note: "Drops from Void Thrax enemies (Centurion, Legatus) and breakable containers throughout Zariman missions at approximately 9% per source. Also drops from Exo Voidrig enemies. Used to craft Hespar, Battacor Prime, and Holdfasts offerings.",
+      },
+    ],
+  },
+
+  // ── Eidolon Plains (Quills standing) ─────────────────────────────────────
+  {
+    name: "Intact Sentient Core",
+    category: "resource",
+    sources: [
+      {
+        planet: "Cetus",
+        mission: "Plains of Eidolon (night)",
+        type: "Enemy Drop",
+        rank: 1,
+        note: "100% drop from Vomvalysts on the Plains of Eidolon at night. Also drops at 50% from Battalysts and Conculysts. These small Sentient creatures patrol the Plains after the sun sets — they disappear at dawn. Used as currency with the Quills syndicate in Cetus (1 Intact = 100 Standing at Rank 1).",
+      },
+    ],
+  },
+  {
+    name: "Exceptional Sentient Core",
+    category: "resource",
+    sources: [
+      {
+        planet: "Cetus",
+        mission: "Plains of Eidolon (night)",
+        type: "Eidolon Hunt",
+        rank: 1,
+        note: "Drops from Eidolon Synovia (the glowing joints on Teralyst, Gantulyst, and Hydrolyst limbs). Destroy a synovia to get 1 Exceptional Core. Also obtained by killing (not capturing) Eidolons. Worth 500 Quills standing each. Requires a Void Strike (charged Amp shot) to damage Eidolons.",
+      },
+    ],
+  },
+  {
+    name: "Flawless Sentient Core",
+    category: "resource",
+    sources: [
+      {
+        planet: "Cetus",
+        mission: "Plains of Eidolon (night)",
+        type: "Eidolon Hunt",
+        rank: 1,
+        note: "Guaranteed drop from capturing an Eidolon (Teralyst, Gantulyst, or Hydrolyst) — you must capture, not kill. To capture: destroy all synovia, shoot the core when the Eidolon kneels, then throw a Void Strike before it recovers. Captures also yield Arcanes. Worth 1,000 Quills standing each.",
+      },
+    ],
+  },
+
+  // ── Eris / Infested ───────────────────────────────────────────────────────
+  {
+    name: "Mutalist Alad V Nav Coordinate",
+    category: "resource",
+    sources: [
+      {
+        planet: "Deimos",
+        mission: "Hyf",
+        type: "Defense",
+        rank: 1,
+        note: "Rotation B reward (22.56% — complete 15 waves per rotation). Also drops from Terrorem Survival on Deimos (Rotation B, 12.5% at 10/20/30 min). Used to craft the Mutalist Alad V Assassinate Key (10 coordinates per key). That key unlocks the fight on Eris (Jordas Golem Assassinate) which drops Nidus blueprints.",
+      },
+    ],
+  },
+
+  // ── General / Cross-game ──────────────────────────────────────────────────
+  {
+    name: "Riven Sliver",
+    category: "resource",
+    sources: [
+      {
+        planet: "Any",
+        mission: "Any (Eximus enemies)",
+        type: "Enemy Drop",
+        rank: 1,
+        note: "2% drop chance from Eximus enemies at level 30+. Also drops from Requiem Relics (Lich/Kuva cycle). In Railjack: drops from enemy crewships and side-objectives. Collect 10 Riven Slivers and trade them for 1 random Riven Mod at Palladino (Iron Wake, Mars). Best farming: high-level Kuva Survival or Steel Path missions with many Eximus spawns.",
       },
     ],
   },
