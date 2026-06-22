@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import Fuse from 'fuse.js'
 import { ITEMS, PLANETS, type Item } from './data'
-import { T, PLANET_LABELS, TYPE_LABELS, type Locale, type TKey, LOCALE_LABELS } from './i18n'
+import { T, ITEM_LABELS, PLANET_LABELS, TYPE_LABELS, type Locale, type TKey, LOCALE_LABELS } from './i18n'
 
 const LOCALES = Object.keys(LOCALE_LABELS) as Locale[]
 
@@ -15,7 +15,7 @@ const CATEGORIES = ['all', 'resource', 'warframe', 'mod', 'prime', 'relic'] as c
 const BEGINNER_KEYS: TKey[] = [
   'termSurvival', 'termDefense', 'termExcavation', 'termDarkSector',
   'termBoss', 'termRotation', 'termDucats', 'termRelics',
-  'termVoidFissure', 'termBounty', 'termVendor', 'termRailjack',
+  'termVoidFissure', 'termBounty', 'termVendor', 'termRailjack', 'termVaulted',
 ]
 
 const locale         = ref<Locale>('en')
@@ -34,20 +34,51 @@ const results        = ref<Item[]>([])
 const selected       = ref<Item | null>(null)
 const cursor         = ref(-1)
 const input          = ref<HTMLInputElement | null>(null)
-const beginnerModal  = ref(false)
-const imageMap       = ref<Record<string, string>>({})
-const activeCategory = ref<string | null>(null)
-const spoilerMode    = ref(false)
+const beginnerModal    = ref(false)
+const imageMap         = ref<Record<string, string>>({})
+const activeCategory   = ref<string | null>(null)
+const spoilerPopup     = ref<Item | null>(null)
+const revealedSpoilers = ref(new Set<string>())
+const showSpoilers     = ref(false)
 
-const fuse = new Fuse(ITEMS, { keys: ['name', 'category'], threshold: 0.35 })
+const IMG_CACHE_KEY = 'helios_img_v1'
+const IMG_CACHE_TTL = 86_400_000 // 24 h
 
-const visibleItems = computed(() =>
-  spoilerMode.value ? ITEMS : ITEMS.filter(i => !i.spoiler)
+;(async () => {
+  try {
+    const raw = localStorage.getItem(IMG_CACHE_KEY)
+    if (raw) {
+      const { ts, map } = JSON.parse(raw) as { ts: number; map: Record<string, string> }
+      if (Date.now() - ts < IMG_CACHE_TTL) { imageMap.value = map; return }
+    }
+  } catch {}
+  try {
+    const data: { name: string; imageName?: string }[] = await fetch(
+      'https://api.warframestat.us/items?only=name,imageName'
+    ).then(r => r.json())
+    const map: Record<string, string> = {}
+    for (const d of data) {
+      if (!d.imageName) continue
+      const url = `https://cdn.warframestat.us/img/${d.imageName}`
+      map[d.name] = url
+      if (d.name.endsWith(' Warframe')) map[d.name.slice(0, -9)] = url
+    }
+    imageMap.value = map
+    try { localStorage.setItem(IMG_CACHE_KEY, JSON.stringify({ ts: Date.now(), map })) } catch {}
+  } catch {}
+})()
+
+const fuse = computed(() =>
+  new Fuse(
+    ITEMS.map(i => ({ ...i, _loc: ITEM_LABELS[locale.value][i.name] ?? '' })),
+    { keys: ['name', '_loc', 'category'], threshold: 0.35 },
+  )
 )
+
+const visibleItems = computed(() => ITEMS)
 
 const filteredResults = computed(() => {
   let r = results.value
-  if (!spoilerMode.value) r = r.filter(i => !i.spoiler)
   if (activeCategory.value) r = r.filter(i => i.category === activeCategory.value)
   return r
 })
@@ -66,7 +97,7 @@ function isActiveTab(cat: string): boolean {
 function search() {
   const q = query.value.trim()
   if (!q) { results.value = []; cursor.value = -1; return }
-  results.value = fuse.search(q).slice(0, 10).map(r => r.item)
+  results.value = fuse.value.search(q).slice(0, 10).map(r => r.item)
   cursor.value = -1
 }
 
@@ -80,6 +111,12 @@ function pick(item: Item) {
   }
 }
 
+function revealSpoiler(name: string) {
+  const s = new Set(revealedSpoilers.value)
+  s.add(name)
+  revealedSpoilers.value = s
+}
+
 function onKey(e: KeyboardEvent) {
   const list = displayItems.value
   if (e.key === 'ArrowDown') {
@@ -91,6 +128,7 @@ function onKey(e: KeyboardEvent) {
     if (cursor.value > 0) cursor.value--
     selected.value = list[cursor.value] ?? null
   } else if (e.key === 'Escape') {
+    if (spoilerPopup.value) { spoilerPopup.value = null; return }
     if (beginnerModal.value) { beginnerModal.value = false; return }
     if (selected.value) { selected.value = null; cursor.value = -1; return }
     query.value = ''; search()
@@ -126,8 +164,9 @@ function getImage(item: Item): string {
     || (item.imageName ? `https://cdn.warframestat.us/img/${item.imageName}` : '')
 }
 
-function tPlanet(p: string): string { return PLANET_LABELS[locale.value][p] ?? p }
-function tType(ty: string): string  { return TYPE_LABELS[locale.value][ty]   ?? ty }
+function tItem(name: string): string   { return ITEM_LABELS[locale.value][name]   ?? name }
+function tPlanet(p: string): string    { return PLANET_LABELS[locale.value][p]      ?? p }
+function tType(ty: string): string     { return TYPE_LABELS[locale.value][ty]       ?? ty }
 
 function bestSource(item: Item): string {
   const s = item.sources[0]
@@ -146,19 +185,6 @@ onMounted(async () => {
   input.value?.focus()
   window.addEventListener('keydown', spaceToFocus)
 
-  try {
-    const data: { name: string; imageName?: string }[] = await fetch(
-      'https://api.warframestat.us/items?only=name,imageName'
-    ).then(r => r.json())
-    const map: Record<string, string> = {}
-    for (const d of data) {
-      if (!d.imageName) continue
-      const url = `https://cdn.warframestat.us/img/${d.imageName}`
-      map[d.name] = url
-      if (d.name.endsWith(' Warframe')) map[d.name.slice(0, -9)] = url
-    }
-    imageMap.value = map
-  } catch { /* silently ignore */ }
 })
 
 onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
@@ -207,25 +233,56 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
       </div>
     </Transition>
 
+    <!-- Spoiler reveal popup -->
+    <Transition name="zoom">
+      <div v-if="spoilerPopup"
+           class="fixed inset-0 z-50 flex items-center justify-center p-4
+                  bg-[rgba(7,9,15,0.92)] backdrop-blur-[4px]"
+           @click.self="spoilerPopup = null">
+        <div class="w-full max-w-[360px] rounded-[10px] border border-[#1c1f27]
+                    bg-[#0b0d12] px-5 py-5">
+          <div class="text-[11px] text-[#c49a3c] font-bold mb-1">⚠ Spoiler Warning</div>
+          <div class="text-[12px] text-[#8a9ab0] leading-[1.6] mb-4">
+            {{ t.spoilerFor }} <span class="text-[#c8b890] font-medium">{{ spoilerPopup.spoilerFor }}</span>.
+          </div>
+          <div class="flex gap-2">
+            <button @click="revealSpoiler(spoilerPopup!.name); spoilerPopup = null"
+                    class="flex-1 text-[10px] font-bold uppercase tracking-[0.1em]
+                           py-[7px] rounded cursor-pointer transition-all duration-150
+                           bg-[rgba(196,154,60,0.1)] border border-[rgba(196,154,60,0.3)]
+                           text-[#c49a3c] hover:bg-[rgba(196,154,60,0.18)]">
+              {{ t.spoilerReveal }}
+            </button>
+            <button @click="spoilerPopup = null"
+                    class="flex-1 text-[10px] font-bold uppercase tracking-[0.1em]
+                           py-[7px] rounded cursor-pointer transition-all duration-150
+                           bg-transparent border border-[#1c1f27]
+                           text-[#5a6a88] hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.3)]">
+              {{ t.spoilerKeep }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <!-- Page column -->
     <div class="max-w-[640px] mx-auto px-5">
 
       <!-- Header -->
-      <div class="flex items-center justify-between pt-11 pb-[22px]">
+      <div class="flex items-center justify-between pt-11 pb-[14px]">
         <div class="flex items-center gap-2.5">
           <img src="/logo.svg" alt="Helios" class="w-6 h-6"/>
           <span class="text-[11px] font-bold tracking-[0.22em] uppercase text-[#c49a3c]">HELIOS</span>
           <span class="text-[11px] text-[#4a5870] ml-1.5 tracking-[0.04em]">{{ t.subtitle }}</span>
         </div>
         <div class="flex items-center gap-2">
-          <button @click="spoilerMode = !spoilerMode"
+          <button @click="showSpoilers = !showSpoilers"
                   class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
-                         rounded cursor-pointer transition-all duration-150
-                         bg-transparent border"
-                  :class="spoilerMode
+                         rounded cursor-pointer transition-all duration-150 bg-transparent border"
+                  :class="showSpoilers
                     ? 'text-[#c49a3c] border-[rgba(196,154,60,0.35)]'
                     : 'text-[#5a6a88] border-[#1c1f27] hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.3)]'">
-            Spoilers {{ spoilerMode ? 'on' : 'off' }}
+            Spoilers {{ showSpoilers ? 'on' : 'off' }}
           </button>
           <button @click="beginnerModal = true"
                   class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
@@ -243,6 +300,11 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                     class="bg-[#0b0d12] text-[#c49a3c]">{{ LOCALE_LABELS[l] }}</option>
           </select>
         </div>
+      </div>
+
+      <!-- Catchphrase -->
+      <div class="pb-[18px] text-[10.5px] text-[#3a4860] italic tracking-[0.02em]">
+        {{ t.catchphrase }}
       </div>
 
       <!-- Search box -->
@@ -301,7 +363,30 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
       <div>
         <template v-for="item in displayItems" :key="item.name">
 
-          <button @click="pick(item)"
+          <!-- Spoiler row (not yet revealed, global toggle off) -->
+          <button v-if="item.spoiler && !showSpoilers && !revealedSpoilers.has(item.name)"
+                  @click="spoilerPopup = item"
+                  class="w-full text-left border-none cursor-pointer
+                         flex items-center gap-3 pl-[10px] py-[10px]
+                         border-b border-b-[#0f1219] bg-transparent
+                         hover:bg-white/[.018] transition-colors duration-150"
+                  :style="{ borderLeft: '2px solid transparent' }">
+            <div class="w-[18px] h-[18px] shrink-0 flex items-center justify-center">
+              <span class="text-[12px] opacity-40">⚠</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-[12px] text-[#4a5870] font-medium">
+                {{ t.spoilerHidden }} <span class="italic">{{ item.spoilerFor }}</span>
+              </div>
+              <div class="text-[10px] text-[#2a3848] mt-px">Click to reveal</div>
+            </div>
+            <span class="shrink-0 text-[9.5px] font-bold uppercase tracking-[0.1em]
+                         text-[#2a3848] px-[5px] py-[2px] rounded border border-[#14171e]">
+              spoiler
+            </span>
+          </button>
+
+          <button v-else-if="!item.spoiler || showSpoilers || revealedSpoilers.has(item.name)" @click="pick(item)"
                   class="w-full text-left border-none cursor-pointer
                          flex items-center gap-3 pl-[10px] py-[10px]
                          border-b border-b-[#0f1219] transition-colors duration-150"
@@ -316,16 +401,23 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                 <span class="w-[7px] h-[7px] rounded-full opacity-50"
                       :style="{ background: CATEGORY_COLOR[item.category] ?? '#3a4050' }"/>
               </span>
-              <img v-if="getImage(item)" :src="getImage(item)" alt=""
+              <img v-if="getImage(item)" :key="getImage(item)" :src="getImage(item)" alt=""
                    class="relative z-[1] w-[18px] h-[18px] object-contain opacity-80"
                    @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
             </div>
 
             <!-- Name + preview -->
             <div class="flex-1 min-w-0">
-              <div class="text-[13.5px] font-medium leading-[1.3] transition-colors duration-150"
-                   :class="selected?.name === item.name ? 'text-[#d4c4a0]' : 'text-[#a8b6b6]'">
-                {{ item.name }}
+              <div class="flex items-center gap-1.5">
+                <span class="text-[13.5px] font-medium leading-[1.3] transition-colors duration-150"
+                      :class="selected?.name === item.name ? 'text-[#d4c4a0]' : (item.vaulted ? 'text-[#7a8a9a]' : 'text-[#a8b6b6]')">
+                  {{ tItem(item.name) }}
+                </span>
+                <span v-if="item.vaulted"
+                      class="text-[7.5px] font-bold uppercase tracking-[0.1em] px-[5px] py-[2px]
+                             rounded text-[#5a6a78] border border-[#1c2030] leading-none shrink-0">
+                  vaulted
+                </span>
               </div>
               <div class="text-[11px] text-[#4a5870] mt-px truncate">
                 {{ bestSource(item) }}
@@ -431,6 +523,16 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
         Data: warframestat.us
         <span class="mx-[5px] opacity-40">|</span>
         Not affiliated with Digital Extremes Ltd.
+        <div class="mt-3 flex justify-center">
+          <a href="https://github.com/Tiltann/Helios" target="_blank" rel="noopener"
+             class="inline-flex items-center gap-1.5 text-[#3a4860] no-underline
+                    hover:text-[#7a8aa0] transition-colors duration-150">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
       </div>
 
     </div>

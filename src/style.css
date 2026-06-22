@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html, body {
+  background: #07090f;
+}
+
 /* Item expansion - spring enter, quick leave */
 .slide-enter-active {
   transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);

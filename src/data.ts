@@ -17,6 +17,8 @@ export interface Item {
   sources: Source[]
   wikiSlug?: string
   spoiler?: boolean
+  spoilerFor?: string
+  vaulted?: boolean
 }
 
 export const PLANETS: Record<string, { color: string; abbr: string }> = {
@@ -42,6 +44,8 @@ export const PLANETS: Record<string, { color: string; abbr: string }> = {
   'Zariman Ten Zero': { color: '#a4a4d4', abbr: 'ZAR' },
   'Orb Vallis':       { color: '#c4a23c', abbr: 'OV'  },
   'Railjack':         { color: '#3c8cc4', abbr: 'RJK' },
+  'Duviri':           { color: '#9c7cd4', abbr: 'DUV' },
+  'Höllvania':        { color: '#d4b44c', abbr: 'HVN' },
 }
 
 export const ITEMS: Item[] = [
@@ -208,179 +212,436 @@ export const ITEMS: Item[] = [
       { mission: 'Ayatan Sculptures', planet: 'Any',   type: 'Decoration',  note: 'Fill them with stars and convert at Maroo\'s Bazaar for a big payout', rank: 3 },
     ],
   },
+  {
+    name: 'Credits', category: 'resource',
+    sources: [
+      { mission: 'The Index', planet: 'Neptune', type: 'Special', note: 'Best credits per hour in the game. Bring a strong warframe and bet medium or high stakes.', rank: 1 },
+      { mission: 'Profit-Taker', planet: 'Venus', type: 'Bounty', note: 'Orb Vallis phase 4 fight. Each run takes about 5 minutes and pays out a lot.', rank: 2 },
+      { mission: 'Sanctuary Onslaught', planet: 'Any', type: 'Special', note: 'Decent credits and also good for other drops at the same time.', rank: 3 },
+    ],
+  },
 
-  // Warframes
+  // Warframes — alphabetical
   {
     name: 'Ash', category: 'warframe', imageName: 'ash.png',
     sources: [
-      { mission: 'Uranus missions', planet: 'Uranus', type: 'Survival / Defense', note: 'Parts drop from Grineer Manics. Higher level missions have more of them.', rank: 1 },
+      { mission: 'Uranus missions', planet: 'Uranus', type: 'Survival', note: 'Parts drop from Grineer Manics. Higher level missions like Ophelia have more of them.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Atlas', category: 'warframe', imageName: 'atlas.png',
+    sources: [
+      { mission: 'Jordas Golem Assassination', planet: 'Eris', type: 'Assassination', note: 'Complete the Jordas Precept quest first to unlock the node.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Banshee', category: 'warframe', imageName: 'banshee.png',
+    sources: [
+      { mission: 'Tenno Lab', planet: 'Orbiter', type: 'Dojo Research', note: 'Research in your Clan Dojo Tenno Lab, then buy the blueprint for credits.', rank: 1 },
     ],
   },
   {
     name: 'Baruuk', category: 'warframe', imageName: 'baruuk.png',
     sources: [
-      { mission: 'Little Duck (Fortuna)', planet: 'Venus', type: 'Vendor', note: 'Needs Vox Solaris rep first, then buy the parts with standing', rank: 1 },
+      { mission: 'Little Duck (Fortuna)', planet: 'Venus', type: 'Vendor', note: 'Needs Vox Solaris standing first, then buy the parts with standing.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Caliban', category: 'warframe', imageName: 'caliban.png',
+    sources: [
+      { mission: 'Archon Hunt', planet: 'Any', type: 'Weekly', note: 'Parts drop from the weekly Archon Hunt reward pool. One hunt per week.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Chroma', category: 'warframe', imageName: 'chroma.png',
+    sources: [
+      { mission: 'The New Strange Quest', planet: 'Any', type: 'Quest', note: 'Blueprint from the quest itself. Components come from completing Void Defense, Orokin Derelict Survival, and Orokin Derelict Defense rotations.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Citrine', category: 'warframe', imageName: 'citrine.png',
+    sources: [
+      { mission: 'Tyana Pass', planet: 'Mars', type: 'Mirror Defense', note: 'All parts drop from Rotation C. Blueprint ~9% drop rate, components ~6% each. Requires Heart of Deimos quest.', rank: 1 },
+      { mission: 'Otak (Necralisk)', planet: 'Deimos', type: 'Vendor', note: 'Buy parts with Belric and Rania Crystal Fragments earned in Mirror Defense.', rank: 2 },
+    ],
+  },
+  {
+    name: 'Cyte-09', category: 'warframe', imageName: 'cyte09.png',
+    spoiler: true, spoilerFor: 'The Hex',
+    sources: [
+      { mission: 'Höllvania Bounties', planet: 'Höllvania', type: 'Bounty', note: 'Blueprint from completing The Hex quest. Components drop from Central Mall bounties at levels 65-90.', rank: 1 },
+      { mission: 'Amir (The Hex)', planet: 'Höllvania', type: 'Vendor', note: 'Buy parts with Hex Syndicate standing.', rank: 2 },
+    ],
+  },
+  {
+    name: 'Dagath', category: 'warframe', imageName: 'dagath.png',
+    sources: [
+      { mission: 'Dagath\'s Hollow (Dojo)', planet: 'Orbiter', type: 'Dojo Research', note: 'Blueprints from the Clan Dojo. Components require Vainthorns from the Abyssal Zone on Ceres (buy entry beacons from any Syndicate).', rank: 1 },
+    ],
+  },
+  {
+    name: 'Dante', category: 'warframe', imageName: 'dante.png',
+    sources: [
+      { mission: 'Armatus', planet: 'Deimos', type: 'Disruption', note: 'All parts drop from Rotation C. Requires The Deadlock Protocol and Whispers in the Walls quests.', rank: 1 },
+      { mission: 'Loid (Sanctum Anatomica)', planet: 'Deimos', type: 'Vendor', note: 'Buy with Vessel Capillaries dropped by Demolishers.', rank: 2 },
     ],
   },
   {
     name: 'Ember', category: 'warframe', imageName: 'ember.png',
     sources: [
-      { mission: 'Tethys', planet: 'Saturn', type: 'Boss', note: 'General Sargas Ruk boss fight', rank: 1 },
+      { mission: 'Tethys', planet: 'Saturn', type: 'Boss', note: 'General Sargas Ruk boss fight.', rank: 1 },
     ],
   },
   {
     name: 'Equinox', category: 'warframe', imageName: 'equinox.png',
     sources: [
-      { mission: 'Tyl Regor', planet: 'Uranus', type: 'Boss', note: '8 parts total split between Day and Night forms, 4 each', rank: 1 },
+      { mission: 'Tyl Regor', planet: 'Uranus', type: 'Boss', note: '8 parts total split between Day and Night forms, 4 each.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Excalibur', category: 'warframe', imageName: 'excalibur.png',
+    sources: [
+      { mission: 'Ambulas (Hades)', planet: 'Pluto', type: 'Assassination', note: 'Parts drop from the Ambulas boss. Requires Animo Nav Beacons to trigger.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Follie', category: 'warframe', imageName: 'follie.png',
+    spoiler: true, spoilerFor: 'Chains of Harrow',
+    sources: [
+      { mission: 'Follie\'s Hunt (Vesper Relay)', planet: 'Venus', type: 'Special', note: 'All parts drop from Rotation A. Requires completing Chains of Harrow.', rank: 1 },
+      { mission: 'Aspirant Zorba', planet: 'Venus', type: 'Vendor', note: 'Buy with Atramentum currency from Follie\'s Hunt.', rank: 2 },
     ],
   },
   {
     name: 'Frost', category: 'warframe', imageName: 'frost.png',
     sources: [
-      { mission: 'War',  planet: 'Mars',  type: 'Boss', note: 'Lt. Lech Kril, best done solo', rank: 1 },
-      { mission: 'Exta', planet: 'Ceres', type: 'Boss', note: 'Lt. Lech Kril and Vor together, needs two players', rank: 2 },
+      { mission: 'War',  planet: 'Mars',  type: 'Boss', note: 'Lt. Lech Kril boss fight.', rank: 1 },
+      { mission: 'Exta', planet: 'Ceres', type: 'Boss', note: 'Lt. Lech Kril and Vor together, both are required at the same time.', rank: 2 },
     ],
   },
   {
     name: 'Gara', category: 'warframe', imageName: 'gara.png',
     sources: [
-      { mission: "Saya's Vigil", planet: 'Earth / Plains', type: 'Quest + Bounties', note: 'Do the quest first, parts come from Cetus bounties after', rank: 1 },
+      { mission: "Saya's Vigil", planet: 'Earth', type: 'Quest + Bounties', note: "Do the quest first, parts come from Plains of Eidolon bounties after.", rank: 1 },
     ],
   },
   {
     name: 'Garuda', category: 'warframe', imageName: 'garuda.png',
     sources: [
-      { mission: 'Orb Vallis Bounties', planet: 'Venus', type: 'Bounty', note: 'Tier 3 to 5 bounties from Eudico in Fortuna', rank: 1 },
+      { mission: 'Orb Vallis Bounties', planet: 'Venus', type: 'Bounty', note: 'Tier 3 to 5 bounties from Eudico in Fortuna.', rank: 1 },
     ],
   },
   {
     name: 'Gauss', category: 'warframe', imageName: 'gauss.png',
     sources: [
-      { mission: 'Kappa', planet: 'Sedna', type: 'Disruption', note: 'All parts come from rotation B and C', rank: 1 },
+      { mission: 'Kappa', planet: 'Sedna', type: 'Disruption', note: 'All parts come from rotation B and C.', rank: 1 },
     ],
   },
   {
-    name: 'Harrow', category: 'warframe', imageName: 'harrow.png', spoiler: true,
+    name: 'Grendel', category: 'warframe', imageName: 'grendel.png',
     sources: [
-      { mission: 'Pago',         planet: 'Kuva Fortress', type: 'Defection',  note: 'Neuroptics drops from rotation C', rank: 1 },
-      { mission: 'Spy missions', planet: 'Any',           type: 'Spy',        note: 'Systems come from Spy rotation C', rank: 2 },
-      { mission: 'Any',          planet: 'Void',          type: 'Any',        note: 'Chassis drops from rare containers in Void missions', rank: 3 },
+      { mission: 'Orb Vallis secret missions', planet: 'Venus', type: 'Special', note: 'Buy Beacon keys from Vox Solaris (standing rank 3+). Three separate missions each hold one encrypted node. No abilities or mods allowed inside.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Gyre', category: 'warframe', imageName: 'gyre.png',
+    sources: [
+      { mission: 'Zariman Bounties', planet: 'Zariman Ten Zero', type: 'Bounty', note: 'Parts drop from bounties at levels 50-95. Requires Angels of the Zariman quest.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Harrow', category: 'warframe', imageName: 'harrow.png',
+    spoiler: true, spoilerFor: 'Chains of Harrow',
+    sources: [
+      { mission: 'Pago',         planet: 'Kuva Fortress', type: 'Defection',  note: 'Neuroptics drops from rotation C.', rank: 1 },
+      { mission: 'Spy missions', planet: 'Any',           type: 'Spy',        note: 'Systems come from Spy rotation C on any faction.', rank: 2 },
+      { mission: 'Any',          planet: 'Void',          type: 'Any',        note: 'Chassis drops from rare containers in Void missions.', rank: 3 },
+    ],
+  },
+  {
+    name: 'Hildryn', category: 'warframe', imageName: 'hildryn.png',
+    sources: [
+      { mission: 'Fortuna Bounties', planet: 'Venus', type: 'Bounty', note: 'High-tier Orb Vallis bounties from Eudico. Also drops from the Exploiter Orb boss fight.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Hydroid', category: 'warframe', imageName: 'hydroid.png',
+    sources: [
+      { mission: 'Oro', planet: 'Earth', type: 'Assassination', note: 'Councilor Vay Hek boss fight. Requires Oro node unlocked.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Inaros', category: 'warframe', imageName: 'inaros.png',
+    sources: [
+      { mission: 'Sands of Inaros Quest', planet: 'Any', type: 'Quest', note: 'Buy the Sands of Inaros quest from Baro Ki\'Teer for 100 Ducats and 25,000 Credits. Blueprint and parts come from the quest itself.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Ivara', category: 'warframe', imageName: 'ivara.png',
+    sources: [
+      { mission: 'Spy Missions', planet: 'Any', type: 'Spy', note: 'Drops from Spy rotation C. Mid-to-high level Spy missions work best. Corpus Spy tends to be the easiest vaults.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Jade', category: 'warframe', imageName: 'jade.png',
+    spoiler: true, spoilerFor: 'Jade Shadows',
+    sources: [
+      { mission: 'Jade Shadows Quest', planet: 'Any', type: 'Quest', note: 'Main blueprint from completing Jade Shadows. Component blueprints drop from Ascension missions on Brutus (Uranus) at ~5% per rotation.', rank: 1 },
+      { mission: 'Ordis', planet: 'Orbiter', type: 'Vendor', note: 'Buy blueprints with 900 Vestigial Motes total if you prefer not to farm.', rank: 2 },
     ],
   },
   {
     name: 'Khora', category: 'warframe', imageName: 'khora.png',
     sources: [
-      { mission: 'Sanctuary Onslaught', planet: 'Any', type: 'Special', note: 'Parts drop at zones 4, 6 and 8', rank: 1 },
+      { mission: 'Sanctuary Onslaught', planet: 'Any', type: 'Special', note: 'Parts drop at zones 4, 6 and 8.', rank: 1 },
     ],
   },
   {
-    name: 'Lavos', category: 'warframe', imageName: 'lavos.png', spoiler: true,
+    name: 'Koumei', category: 'warframe', imageName: 'koumei.png',
+    spoiler: true, spoilerFor: 'Once Awake',
     sources: [
-      { mission: 'Son (Necralisk)', planet: 'Deimos', type: 'Vendor', note: 'Buy parts with Son Tokens', rank: 1 },
+      { mission: 'Saya\'s Visions (Shrine Defense)', planet: 'Earth', type: 'Defense', note: 'Requires completing Saya\'s Vigil and Once Awake. Parts drop from Rotation A at ~4% each. Also drop from the Infested Oni boss.', rank: 1 },
+      { mission: 'Koumei\'s Shrine (Cetus)', planet: 'Earth', type: 'Vendor', note: 'Buy with Fate Pearls dropped by the Oni boss.', rank: 2 },
+    ],
+  },
+  {
+    name: 'Kullervo', category: 'warframe', imageName: 'kullervo.png',
+    sources: [
+      { mission: 'Kullervo\'s Hold (Duviri)', planet: 'Duviri', type: 'Boss', note: 'Defeat the Kullervo boss during Anger, Sorrow, or Fear Spirals to earn Kullervo\'s Bane. Buy blueprints from Acrithis in the Dormizone (42 Banes total).', rank: 1 },
+    ],
+  },
+  {
+    name: 'Lavos', category: 'warframe', imageName: 'lavos.png',
+    spoiler: true, spoilerFor: 'Heart of Deimos',
+    sources: [
+      { mission: 'Son (Necralisk)', planet: 'Deimos', type: 'Vendor', note: 'Buy parts with Son Tokens earned from Deimos bounties.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Limbo', category: 'warframe', imageName: 'limbo.png',
+    sources: [
+      { mission: 'Limbo Theorem Quest', planet: 'Any', type: 'Quest', note: 'Unlocked automatically from the Saturn Junction. Blueprint and all parts come from solving the quest puzzles.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Loki', category: 'warframe', imageName: 'loki.png',
+    sources: [
+      { mission: 'Psamathe', planet: 'Neptune', type: 'Assassination', note: 'Hyena Pack boss fight. One of the easier assassinations.', rank: 1 },
     ],
   },
   {
     name: 'Mag', category: 'warframe', imageName: 'mag.png',
     sources: [
-      { mission: 'Iliad', planet: 'Phobos', type: 'Boss', note: 'The Sergeant boss fight', rank: 1 },
+      { mission: 'Iliad', planet: 'Phobos', type: 'Assassination', note: 'The Sergeant boss fight.', rank: 1 },
     ],
   },
   {
     name: 'Mesa', category: 'warframe', imageName: 'mesa.png',
     sources: [
-      { mission: 'Mutalist Alad V', planet: 'Eris', type: 'Boss', note: 'Requires Mutalist Coordinates key to access', rank: 1 },
+      { mission: 'Mutalist Alad V', planet: 'Eris', type: 'Assassination', note: 'Requires Mutalist Coordinates key to access. Get the key from Infested Invasion rewards.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Mirage', category: 'warframe', imageName: 'mirage.png',
+    sources: [
+      { mission: 'Hidden Messages Quest', planet: 'Any', type: 'Quest', note: 'Solve the riddles in the quest to get all four blueprints. The riddles each point to a real game location.', rank: 1 },
     ],
   },
   {
     name: 'Nekros', category: 'warframe', imageName: 'nekros.png',
     sources: [
-      { mission: 'Orokin Derelict Assassination', planet: 'Derelict', type: 'Boss', note: 'Lephantis boss, needs a Derelict Assassination key to access', rank: 1 },
+      { mission: 'Orokin Derelict Assassination', planet: 'Derelict', type: 'Assassination', note: 'Lephantis boss, needs a Derelict Assassination key to access.', rank: 1 },
     ],
   },
   {
-    name: 'Nidus', category: 'warframe', imageName: 'nidus.png', spoiler: true,
+    name: 'Nezha', category: 'warframe', imageName: 'nezha.png',
     sources: [
-      { mission: 'Infested Salvage', planet: 'Eris', type: 'Rotation C', note: 'Complete The Glast Gambit quest first', rank: 1 },
+      { mission: 'Tenno Lab', planet: 'Orbiter', type: 'Dojo Research', note: 'Research in your Clan Dojo Tenno Lab, then buy the blueprint for credits.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Nidus', category: 'warframe', imageName: 'nidus.png',
+    spoiler: true, spoilerFor: 'The Glast Gambit',
+    sources: [
+      { mission: 'Infested Salvage', planet: 'Eris', type: 'Rotation C', note: 'Complete The Glast Gambit quest first to unlock the mode.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Nokko', category: 'warframe', imageName: 'nokko.png',
+    spoiler: true, spoilerFor: 'The New War',
+    sources: [
+      { mission: 'Deepmines Bounties', planet: 'Venus', type: 'Bounty', note: 'Requires The New War. Parts drop from specific bounty missions. Blueprint drops from all three bounty types.', rank: 1 },
+      { mission: 'Nightcap (Fortuna)', planet: 'Venus', type: 'Vendor', note: 'Buy with Fergolyte. Requires Gardener rank with Nightcap.', rank: 2 },
     ],
   },
   {
     name: 'Nova', category: 'warframe', imageName: 'nova.png',
     sources: [
-      { mission: 'Naamah', planet: 'Europa', type: 'Boss', note: 'The Raptor boss fight', rank: 1 },
+      { mission: 'Naamah', planet: 'Europa', type: 'Assassination', note: 'The Raptor boss fight.', rank: 1 },
     ],
   },
   {
-    name: 'Octavia', category: 'warframe', imageName: 'octavia.png', spoiler: true,
+    name: 'Nyx', category: 'warframe', imageName: 'nyx.png',
     sources: [
-      { mission: 'Lua Music Puzzle',  planet: 'Lua',      type: 'Cache / Puzzle', note: 'Chassis comes from the hidden music room puzzle in Orokin Moon', rank: 1 },
-      { mission: 'Orokin Derelict',   planet: 'Derelict', type: 'Rotation C',     note: 'Systems drop from the rotation C cache', rank: 2 },
+      { mission: 'Phorid Assassination', planet: 'Any', type: 'Invasion', note: 'Phorid spawns during Infested Invasions. Check the Alerts tab for active nodes. Parts also drop from the Assassination node on Phorid\'s home planet.', rank: 1 },
     ],
   },
   {
-    name: 'Protea', category: 'warframe', imageName: 'protea.png', spoiler: true,
+    name: 'Oberon', category: 'warframe', imageName: 'oberon.png',
     sources: [
-      { mission: 'Granum Void', planet: 'Neptune', type: 'Special', note: 'Psamathe node, bring a Granum Crown to enter', rank: 1 },
+      { mission: 'Any Grineer mission', planet: 'Any', type: 'Enemy Drop', note: 'Parts drop from Eximus enemies across all Grineer missions. Survival and Defense have the most Eximus spawns.', rank: 1 },
     ],
   },
   {
-    name: 'Revenant', category: 'warframe', imageName: 'revenant.png', spoiler: true,
+    name: 'Octavia', category: 'warframe', imageName: 'octavia.png',
+    spoiler: true, spoilerFor: 'The Second Dream',
     sources: [
-      { mission: 'Plains of Eidolon Bounties', planet: 'Earth', type: 'Bounty', note: 'Night-time bounties only, pick them up from Konzu in Cetus', rank: 1 },
+      { mission: 'Lua Music Puzzle',  planet: 'Lua',      type: 'Cache / Puzzle', note: 'Chassis comes from the hidden music room puzzle on Orokin Moon. Lua is unlocked after The Second Dream.', rank: 1 },
+      { mission: 'Orokin Derelict',   planet: 'Derelict', type: 'Rotation C',     note: 'Systems drop from the rotation C cache.', rank: 2 },
+    ],
+  },
+  {
+    name: 'Oraxia', category: 'warframe', imageName: 'oraxia.png',
+    spoiler: true, spoilerFor: 'The Hex',
+    sources: [
+      { mission: 'Isleweaver (Duviri)', planet: 'Duviri', type: 'Boss', note: 'Defeat the Isleweaver boss in Duviri. Requires completing The Hex.', rank: 1 },
+      { mission: 'Acrithis (Dormizone)', planet: 'Duviri', type: 'Vendor', note: 'Buy with Scuttler Husks (120 total for the full set).', rank: 2 },
+    ],
+  },
+  {
+    name: 'Protea', category: 'warframe', imageName: 'protea.png',
+    spoiler: true, spoilerFor: 'The Deadlock Protocol',
+    sources: [
+      { mission: 'Granum Void', planet: 'Neptune', type: 'Special', note: 'Psamathe node. Bring a Granum Crown to enter. Requires completing The Deadlock Protocol quest.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Qorvex', category: 'warframe', imageName: 'qorvex.png',
+    spoiler: true, spoilerFor: 'Whispers in the Walls',
+    sources: [
+      { mission: 'Sanctum Anatomica Bounties', planet: 'Deimos', type: 'Bounty', note: 'Blueprint from completing Whispers in the Walls. Components drop from bounties at levels 55-80 (~12% each).', rank: 1 },
+      { mission: 'Bird 3 (Cavia)', planet: 'Deimos', type: 'Vendor', note: 'Buy with standing. Requires Rank 2 (Researcher) for components, Rank 4 (Scholar) for main blueprint.', rank: 2 },
+    ],
+  },
+  {
+    name: 'Revenant', category: 'warframe', imageName: 'revenant.png',
+    spoiler: true, spoilerFor: 'Plains of Eidolon',
+    sources: [
+      { mission: 'Plains of Eidolon Bounties', planet: 'Earth', type: 'Bounty', note: 'Night-time bounties only. Pick them up from Konzu in Cetus.', rank: 1 },
     ],
   },
   {
     name: 'Rhino', category: 'warframe', imageName: 'rhino.png',
     sources: [
-      { mission: 'Fossa', planet: 'Venus', type: 'Boss', note: 'Jackal boss, great starting point for new players', rank: 1 },
+      { mission: 'Fossa', planet: 'Venus', type: 'Assassination', note: 'Jackal boss. One of the first bosses new players encounter.', rank: 1 },
     ],
   },
   {
     name: 'Saryn', category: 'warframe', imageName: 'saryn.png',
     sources: [
-      { mission: 'Merrow', planet: 'Sedna', type: 'Boss', note: 'Kela De Thaym, complete some Rathuum matches to unlock the fight', rank: 1 },
+      { mission: 'Merrow', planet: 'Sedna', type: 'Assassination', note: 'Kela De Thaym. Complete some Rathuum matches to unlock the fight.', rank: 1 },
     ],
   },
   {
     name: 'Sevagoth', category: 'warframe', imageName: 'sevagoth.png',
     sources: [
-      { mission: 'Void Storm', planet: 'Any (Railjack)', type: 'Railjack', note: 'All parts drop from Void Storm rotations', rank: 1 },
+      { mission: 'Void Storm', planet: 'Railjack', type: 'Railjack', note: 'All parts drop from Void Storm rotations in Railjack missions.', rank: 1 },
     ],
   },
   {
-    name: 'Titania', category: 'warframe', imageName: 'titania.png', spoiler: true,
+    name: 'Sirius & Orion', category: 'warframe',
+    spoiler: true, spoilerFor: 'Jade Shadows: Constellations',
     sources: [
-      { mission: 'A Man of Few Words', planet: 'Any', type: 'Quest', note: 'Some parts come from the quest itself, others from Orokin Derelict bounties', rank: 1 },
+      { mission: 'Jade Shadows: Constellations Quest', planet: 'Any', type: 'Quest', note: 'Main blueprint from completing the quest. Component blueprints from Scoria\'s Angel or The Kuva Wytch on Uranus Proxima (Railjack).', rank: 1 },
+      { mission: 'Hunhow (Pontis Tower)', planet: 'Any', type: 'Vendor', note: 'Buy blueprints with 545 Emerald or Crimson Talents.', rank: 2 },
+    ],
+  },
+  {
+    name: 'Styanax', category: 'warframe', imageName: 'styanax.png',
+    sources: [
+      { mission: 'Chipper (Kahl\'s Garrison)', planet: 'Any', type: 'Vendor', note: 'Buy with Stock earned from weekly Break Narmer missions. Requires Veilbreaker quest. Total 270 Stock for the full set.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Temple', category: 'warframe',
+    spoiler: true, spoilerFor: 'The Hex',
+    sources: [
+      { mission: 'Solstice Square (Höllvania)', planet: 'Höllvania', type: 'Stage Defense', note: 'All parts drop from Stage Defense rotations. Requires completing The Hex and Rank 4 with The Hex Syndicate.', rank: 1 },
+      { mission: 'Flare (The Hex Syndicate)', planet: 'Höllvania', type: 'Vendor', note: 'Buy with Beating Heartstrings (390 total).', rank: 2 },
+    ],
+  },
+  {
+    name: 'Titania', category: 'warframe', imageName: 'titania.png',
+    spoiler: true, spoilerFor: 'The Silver Grove',
+    sources: [
+      { mission: 'The Silver Grove Quest', planet: 'Any', type: 'Quest', note: 'Some parts come from the quest itself, others from Orokin Derelict bounties.', rank: 1 },
     ],
   },
   {
     name: 'Trinity', category: 'warframe', imageName: 'trinity.png',
     sources: [
-      { mission: 'Hades', planet: 'Pluto', type: 'Boss', note: 'Ambulas boss, you need Animo Nav Beacons to trigger it', rank: 1 },
+      { mission: 'Hades', planet: 'Pluto', type: 'Assassination', note: 'Ambulas boss. You need Animo Nav Beacons to trigger it.', rank: 1 },
     ],
   },
   {
-    name: 'Wisp', category: 'warframe', imageName: 'wisp.png', spoiler: true,
+    name: 'Uriel', category: 'warframe',
+    spoiler: true, spoilerFor: 'The Old Peace',
     sources: [
-      { mission: 'The Ropalolyst', planet: 'Jupiter', type: 'Boss', note: 'Finish The Jovian Concord quest to unlock this boss', rank: 1 },
+      { mission: 'The Old Peace Quest', planet: 'Any', type: 'Quest', note: 'Blueprint from completing The Old Peace quest.', rank: 1 },
+      { mission: 'Roathe\'s Oblivion (The Descendia)', planet: 'Any', type: 'Assassination', note: 'Component blueprints drop at 12.5% each. Also purchaseable from Roathe in La Cathédrale with Maphica currency.', rank: 2 },
     ],
   },
   {
-    name: 'Wukong', category: 'warframe', imageName: 'wukong.png', spoiler: true,
+    name: 'Vauban', category: 'warframe', imageName: 'vauban.png',
     sources: [
-      { mission: 'Any (Lua)', planet: 'Lua', type: 'Any', note: 'Parts drop from any Orokin Moon rotation', rank: 1 },
+      { mission: 'Nightwave Store', planet: 'Any', type: 'Vendor', note: 'Parts available in the Nightwave rewards store for Nightwave creds.', rank: 1 },
     ],
   },
   {
-    name: 'Xaku', category: 'warframe', imageName: 'xaku.png', spoiler: true,
+    name: 'Volt', category: 'warframe', imageName: 'volt.png',
     sources: [
-      { mission: 'Cambion Drift Bounties', planet: 'Deimos',   type: 'Bounty',   note: 'Chassis drops from Mother bounties', rank: 1 },
-      { mission: 'Void Storm',             planet: 'Railjack', type: 'Railjack', note: 'Neuroptics and Systems come from Void Storm', rank: 2 },
+      { mission: 'Tenno Lab', planet: 'Orbiter', type: 'Dojo Research', note: 'Research in your Clan Dojo Tenno Lab, then buy the blueprint for credits.', rank: 1 },
     ],
   },
   {
-    name: 'Yareli', category: 'warframe', imageName: 'yareli.png', spoiler: true,
+    name: 'Voruna', category: 'warframe', imageName: 'voruna.png',
     sources: [
-      { mission: 'Waverider Quest', planet: 'Orbiter', type: 'Quest', note: 'Start the Waverider quest from the Helminth room in your Orbiter', rank: 1 },
+      { mission: 'Conjunction Survival (Yuvarium/Circulus)', planet: 'Lua', type: 'Survival', note: 'Parts drop from Rotation C. Requires The War Within quest. Buy from Yonta on the Zariman with Lua Thrax Plasm as an alternative.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Wisp', category: 'warframe', imageName: 'wisp.png',
+    spoiler: true, spoilerFor: 'The Jovian Concord',
+    sources: [
+      { mission: 'The Ropalolyst', planet: 'Jupiter', type: 'Assassination', note: 'Finish The Jovian Concord quest to unlock this boss fight.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Wukong', category: 'warframe', imageName: 'wukong.png',
+    spoiler: true, spoilerFor: 'The Second Dream',
+    sources: [
+      { mission: 'Any (Lua)', planet: 'Lua', type: 'Any', note: 'Parts drop from any Orokin Moon mission rotation. Lua is unlocked after The Second Dream.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Xaku', category: 'warframe', imageName: 'xaku.png',
+    spoiler: true, spoilerFor: 'Heart of Deimos',
+    sources: [
+      { mission: 'Cambion Drift Bounties', planet: 'Deimos',   type: 'Bounty',   note: 'Chassis from Mother bounties. Requires Heart of Deimos quest.', rank: 1 },
+      { mission: 'Void Storm',             planet: 'Railjack', type: 'Railjack', note: 'Neuroptics and Systems from Void Storm rotations.', rank: 2 },
+    ],
+  },
+  {
+    name: 'Yareli', category: 'warframe', imageName: 'yareli.png',
+    spoiler: true, spoilerFor: 'The Waverider',
+    sources: [
+      { mission: 'The Waverider Quest', planet: 'Orbiter', type: 'Quest', note: 'Start the Waverider quest from the Helminth room in your Orbiter. All parts come from the quest.', rank: 1 },
+    ],
+  },
+  {
+    name: 'Zephyr', category: 'warframe', imageName: 'zephyr.png',
+    sources: [
+      { mission: 'Tenno Lab', planet: 'Orbiter', type: 'Dojo Research', note: 'Research in your Clan Dojo Tenno Lab, then buy the blueprint for credits.', rank: 1 },
     ],
   },
 
@@ -495,51 +756,125 @@ export const ITEMS: Item[] = [
     name: 'Rhino Prime', category: 'prime', ducats: 65, imageName: 'rhinoPrime.png',
     wikiSlug: 'Rhino/Prime',
     sources: [
-      { mission: 'Axi A6, Lith R4, Meso C6, Neo R4', planet: 'Void', type: 'Void Fissure', note: 'Blueprint from Axi A6, Neuroptics from Lith R4, Chassis from Meso C6, Systems from Neo R4', rank: 1 },
-      { mission: "Baro Ki'Teer", planet: 'Any Relay', type: 'Vendor', note: 'Sometimes available from Baro during Prime Resurgence', rank: 2 },
+      { mission: 'Axi A6, Lith R4, Meso C6, Neo R4', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi A6 (rare). Neuroptics: Lith R4 (rare). Chassis: Meso C6 (rare). Systems: Neo R4 (rare).', rank: 1 },
+      { mission: "Baro Ki'Teer", planet: 'Any Relay', type: 'Vendor', note: 'Sometimes available during Prime Resurgence', rank: 2 },
     ],
   },
   {
     name: 'Saryn Prime', category: 'prime', ducats: 100, imageName: 'sarynPrime.png',
     wikiSlug: 'Saryn/Prime',
     sources: [
-      { mission: 'Axi S3, Lith S9, Meso S4, Neo S5', planet: 'Void', type: 'Void Fissure', note: 'Blueprint from Axi S3, Neuroptics from Meso S4, Chassis from Lith S9, Systems from Neo S5', rank: 1 },
-      { mission: "Baro Ki'Teer", planet: 'Any Relay', type: 'Vendor', note: 'Sometimes available from Baro during Prime Resurgence', rank: 2 },
+      { mission: 'Axi S3, Lith S9, Meso S4, Neo S5', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi S3 (rare). Neuroptics: Meso S4 (rare). Chassis: Lith S9 (rare). Systems: Neo S5 (rare).', rank: 1 },
+      { mission: "Baro Ki'Teer", planet: 'Any Relay', type: 'Vendor', note: 'Sometimes available during Prime Resurgence', rank: 2 },
     ],
   },
   {
     name: 'Mesa Prime', category: 'prime', ducats: 100, imageName: 'mesaPrime.png',
     wikiSlug: 'Mesa/Prime',
     sources: [
-      { mission: 'Axi M2, Lith M7, Meso M3, Neo M4', planet: 'Void', type: 'Void Fissure', note: 'Blueprint from Axi M2, Neuroptics from Lith M7, Chassis from Meso M3, Systems from Neo M4', rank: 1 },
+      { mission: 'Axi M2, Lith M7, Meso M3, Neo M4', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi M2 (rare). Neuroptics: Lith M7 (rare). Chassis: Meso M3 (rare). Systems: Neo M4 (rare).', rank: 1 },
     ],
   },
   {
-    name: 'Nova Prime', category: 'prime', ducats: 65, imageName: 'novaPrime.png',
+    name: 'Ash Prime', category: 'prime', ducats: 65, vaulted: true,
+    wikiSlug: 'Ash/Prime',
+    sources: [
+      { mission: 'Axi A4, Neo A1 + others', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi A4 (rare). Neuroptics: Neo A1 (rare). Chassis and Systems relics return during Prime Resurgence, check wiki for the full list.', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market is the fastest way to buy individual parts', rank: 2 },
+    ],
+  },
+  {
+    name: 'Gauss Prime', category: 'prime', ducats: 65,
+    wikiSlug: 'Gauss/Prime',
+    sources: [
+      { mission: 'Axi G5, Lith G6, Meso G4, Neo G3', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi G5 (rare). Neuroptics: Lith G6 (rare). Chassis: Meso G4 (rare). Systems: Neo G3 (rare).', rank: 1 },
+    ],
+  },
+  {
+    name: 'Nidus Prime', category: 'prime', ducats: 65, vaulted: true,
+    wikiSlug: 'Nidus/Prime',
+    sources: [
+      { mission: 'Axi N10, Lith N8, Meso N11, Neo N14', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi N10 (rare). Neuroptics: Lith N8 (rare). Chassis: Neo N14 (rare). Systems: Meso N11 (rare).', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
+    ],
+  },
+  {
+    name: 'Harrow Prime', category: 'prime', ducats: 65, vaulted: true,
+    wikiSlug: 'Harrow/Prime',
+    sources: [
+      { mission: 'Axi H5, Lith H4, Meso H2, Neo H2', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi H5 (rare). Neuroptics: Lith H4 (rare). Chassis: Meso H2 (rare). Systems: Neo H2 (rare).', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
+    ],
+  },
+  {
+    name: 'Octavia Prime', category: 'prime', ducats: 65, vaulted: true,
+    wikiSlug: 'Octavia/Prime',
+    sources: [
+      { mission: 'Axi O5, Lith O5, Meso O5, Neo O3', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Lith O5 (rare). Neuroptics: Neo O3 (rare). Chassis: Meso O5 (rare). Systems: Axi O5 (rare).', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
+    ],
+  },
+  {
+    name: 'Khora Prime', category: 'prime', ducats: 65, vaulted: true,
+    wikiSlug: 'Khora/Prime',
+    sources: [
+      { mission: 'Axi K7, Lith K6, Meso K5, Neo K4', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi K7 (rare). Neuroptics: Lith K6 (rare). Chassis: Meso K5 (rare). Systems: Neo K4 (rare).', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
+    ],
+  },
+  {
+    name: 'Revenant Prime', category: 'prime', ducats: 65, vaulted: true,
+    wikiSlug: 'Revenant/Prime',
+    sources: [
+      { mission: 'Axi R4, Lith R9, Meso R8, Neo R9', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi R4 (rare). Neuroptics: Lith R9 (rare). Chassis: Meso R8 (rare). Systems: Neo R9 (rare).', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
+    ],
+  },
+  {
+    name: 'Wisp Prime', category: 'prime', ducats: 65, vaulted: true,
+    wikiSlug: 'Wisp/Prime',
+    sources: [
+      { mission: 'Axi W3, Lith W3, Meso W5, Neo W3', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi W3 (rare). Neuroptics: Lith W3 (rare). Chassis: Meso W5 (rare). Systems: Neo W3 (rare).', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
+    ],
+  },
+  {
+    name: 'Gara Prime', category: 'prime', ducats: 65,
+    wikiSlug: 'Gara/Prime',
+    sources: [
+      { mission: 'Axi G7, Lith G8, Meso G6, Neo G5', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi G7 (rare). Neuroptics: Lith G8 (rare). Chassis: Meso G6 (rare). Systems: Neo G5 (rare).', rank: 1 },
+    ],
+  },
+  {
+    name: 'Nova Prime', category: 'prime', ducats: 65, vaulted: true,
     wikiSlug: 'Nova/Prime',
     sources: [
-      { mission: 'Axi N5, Lith N5, Meso N6, Neo N10', planet: 'Void', type: 'Void Fissure', note: 'May be vaulted, check the wiki for the current relic list', rank: 1 },
+      { mission: 'Axi N5, Lith N5, Meso N6, Neo N10', planet: 'Void', type: 'Void Fissure', note: 'Blueprint: Axi N5 (rare). Neuroptics: Neo N10 (rare). Chassis: Lith N5 (rare). Systems: Meso N6 (rare). Relics return during Prime Resurgence.', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
     ],
   },
   {
-    name: 'Trinity Prime', category: 'prime', ducats: 65, imageName: 'trinityPrime.png',
+    name: 'Trinity Prime', category: 'prime', ducats: 65, vaulted: true,
     wikiSlug: 'Trinity/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Void', type: 'Void Fissure', note: 'Likely vaulted, check the wiki or trade with other players', rank: 1 },
+      { mission: 'Axi T3, Lith T3, Meso T3, Neo T1', planet: 'Void', type: 'Void Fissure', note: 'Relics return during Prime Resurgence. Check wiki for current designations.', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
     ],
   },
   {
-    name: 'Loki Prime', category: 'prime', ducats: 65, imageName: 'lokiPrime.png',
+    name: 'Loki Prime', category: 'prime', ducats: 65, vaulted: true,
     wikiSlug: 'Loki/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Void', type: 'Void Fissure', note: 'Likely vaulted, check the wiki or trade with other players', rank: 1 },
+      { mission: 'Meso K2, Neo K2, Axi L4', planet: 'Void', type: 'Void Fissure', note: 'Relics return during Prime Resurgence. Check wiki for current designations.', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
     ],
   },
   {
-    name: 'Volt Prime', category: 'prime', ducats: 45, imageName: 'voltPrime.png',
+    name: 'Volt Prime', category: 'prime', ducats: 45, vaulted: true,
     wikiSlug: 'Volt/Prime',
     sources: [
-      { mission: 'Void Fissure', planet: 'Void', type: 'Void Fissure', note: 'Likely vaulted, check the wiki or trade with other players', rank: 1 },
+      { mission: 'Meso V4, Neo V8, Axi V8', planet: 'Void', type: 'Void Fissure', note: 'Relics return during Prime Resurgence. Check wiki for current designations.', rank: 1 },
+      { mission: 'Trade chat', planet: 'Any', type: 'Special', note: 'warframe.market for quick part purchases', rank: 2 },
     ],
   },
 
