@@ -7,10 +7,10 @@ import { T, ITEM_LABELS, PLANET_LABELS, TYPE_LABELS, type Locale, type TKey, LOC
 const LOCALES = Object.keys(LOCALE_LABELS) as Locale[]
 
 const CATEGORY_COLOR: Record<string, string> = {
-  resource: '#5284e0', prime: '#c49a3c', warframe: '#52c27a', mod: '#c47a3c', relic: '#9c6cc4',
+  resource: '#5284e0', prime: '#c49a3c', warframe: '#52c27a', mod: '#c47a3c', relic: '#9c6cc4', weapon: '#c45252', companion: '#4fb8b0',
 }
 
-const CATEGORIES = ['all', 'resource', 'warframe', 'mod', 'prime', 'relic'] as const
+const CATEGORIES = ['all', 'resource', 'warframe', 'weapon', 'companion', 'mod', 'prime', 'relic'] as const
 
 const BEGINNER_KEYS: TKey[] = [
   'termSurvival', 'termDefense', 'termExcavation', 'termDarkSector',
@@ -27,6 +27,8 @@ const catLabel       = computed((): Record<string, string> => ({
   warframe: t.value.catWarframe,
   mod:      t.value.catMod,
   relic:    t.value.catRelic,
+  weapon:    t.value.catWeapon,
+  companion: t.value.catCompanion,
 }))
 
 const query          = ref('')
@@ -35,6 +37,16 @@ const selected       = ref<Item | null>(null)
 const cursor         = ref(-1)
 const input          = ref<HTMLInputElement | null>(null)
 const beginnerModal    = ref(false)
+const masteryModal     = ref(false)
+const mrLevel          = ref(0)
+
+// Cumulative mastery XP required to reach each MR level
+const MR_THRESHOLDS = [
+  0, 1500, 5250, 11250, 20000, 31250, 45000, 61250, 80000,
+  101250, 125000, 151250, 180000, 211250, 245000, 281250, 320000,
+  361250, 405000, 451250, 500000, 551250, 605000, 661250, 720000,
+  781250, 845000, 911250, 980000, 1051250, 1125000,
+]
 const imageMap         = ref<Record<string, string>>({})
 const activeCategory   = ref<string | null>(null)
 const spoilerPopup     = ref<Item | null>(null)
@@ -160,8 +172,8 @@ function getImage(item: Item): string {
     if (RELIC_TIER_IMAGE[tier])
       return `https://cdn.warframestat.us/img/${RELIC_TIER_IMAGE[tier]}`
   }
-  return imageMap.value[item.name]
-    || (item.imageName ? `https://cdn.warframestat.us/img/${item.imageName}` : '')
+  if (item.imageName) return `https://cdn.warframestat.us/img/${item.imageName}`
+  return imageMap.value[item.name] ?? ''
 }
 
 function tItem(name: string): string   { return ITEM_LABELS[locale.value][name]   ?? name }
@@ -265,6 +277,102 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
       </div>
     </Transition>
 
+    <!-- Mastery Modal -->
+    <Transition name="zoom">
+      <div v-if="masteryModal"
+           class="fixed inset-0 z-50 flex items-center justify-center"
+           style="background:rgba(7,9,15,0.85);backdrop-filter:blur(4px)"
+           @click.self="masteryModal = false">
+        <div class="bg-[#0d1018] border border-[#1c1f27] rounded-xl shadow-2xl w-full max-w-[560px] mx-4"
+             style="max-height:88vh;overflow-y:auto">
+          <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[#1c1f27]">
+            <span class="text-[13px] font-bold uppercase tracking-[0.12em] text-[#c49a3c]">
+              {{ t.masteryMode }} Rank Calculator
+            </span>
+            <button @click="masteryModal = false"
+                    class="text-[#3a4050] hover:text-[#c49a3c] transition-colors text-lg leading-none cursor-pointer">
+              ✕
+            </button>
+          </div>
+          <div class="px-6 py-5 space-y-5">
+
+            <div class="flex items-center gap-3">
+              <span class="text-[11px] text-[#5a6a88] uppercase tracking-[0.08em] whitespace-nowrap">Your MR</span>
+              <input type="range" min="0" max="30" v-model.number="mrLevel"
+                     class="flex-1 accent-[#c49a3c] cursor-pointer"/>
+              <span class="text-[22px] font-bold text-[#c49a3c] w-8 text-right">{{ mrLevel }}</span>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[10px] text-[#3a4050] mb-1">
+                <span>{{ MR_THRESHOLDS[mrLevel].toLocaleString() }} XP earned</span>
+                <span v-if="mrLevel < 30">{{ MR_THRESHOLDS[mrLevel + 1].toLocaleString() }} XP for MR {{ mrLevel + 1 }}</span>
+                <span v-else>Max rank reached</span>
+              </div>
+              <div class="h-[4px] rounded-full bg-[#1c1f27] overflow-hidden">
+                <div class="h-full rounded-full bg-[#c49a3c] transition-all duration-300"
+                     :style="{ width: mrLevel === 30 ? '100%' : `${((MR_THRESHOLDS[mrLevel] / MR_THRESHOLDS[30]) * 100).toFixed(1)}%` }"/>
+              </div>
+            </div>
+
+            <div v-if="mrLevel < 30" class="bg-[#070a10] border border-[#1c1f27] rounded-lg p-4">
+              <p class="text-[11px] text-[#5a6a88] uppercase tracking-[0.08em] mb-3">
+                To reach MR {{ mrLevel + 1 }} you need
+                <span class="text-[#c49a3c]">{{ (MR_THRESHOLDS[mrLevel + 1] - MR_THRESHOLDS[mrLevel]).toLocaleString() }}</span>
+                more XP
+              </p>
+              <div class="grid grid-cols-2 gap-2 text-[11px]">
+                <div class="flex items-center gap-2 text-[#8a9ab8]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#52c27a] shrink-0"/>
+                  {{ Math.ceil((MR_THRESHOLDS[mrLevel + 1] - MR_THRESHOLDS[mrLevel]) / 6000) }} warframes
+                  <span class="text-[#3a4050]">(6k each)</span>
+                </div>
+                <div class="flex items-center gap-2 text-[#8a9ab8]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#c45252] shrink-0"/>
+                  {{ Math.ceil((MR_THRESHOLDS[mrLevel + 1] - MR_THRESHOLDS[mrLevel]) / 3000) }} weapons
+                  <span class="text-[#3a4050]">(3k each)</span>
+                </div>
+              </div>
+            </div>
+            <div v-else class="bg-[#070a10] border border-[rgba(196,154,60,0.3)] rounded-lg p-4 text-center">
+              <p class="text-[13px] font-bold text-[#c49a3c]">MR 30 — Maximum Rank</p>
+            </div>
+
+            <div>
+              <p class="text-[10px] text-[#3a4050] uppercase tracking-[0.08em] mb-2">Mastery XP per item (leveled to 30, once only)</p>
+              <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]">
+                <div v-for="row in [
+                  ['Warframe', '6,000'],['Archwing', '6,000'],
+                  ['Primary', '3,000'],['Secondary', '3,000'],
+                  ['Melee', '3,000'],['Companion', '3,000'],
+                  ['K-Drive / MOA', '3,000'],['Arch-Gun / Arch-Melee', '3,000'],
+                ]" :key="row[0]" class="flex items-center justify-between">
+                  <span class="text-[#5a6a88]">{{ row[0] }}</span>
+                  <span class="text-[#c49a3c] font-mono">{{ row[1] }} XP</span>
+                </div>
+              </div>
+              <p class="text-[10px] text-[#2a3040] mt-2">Each item counts only once. Forma re-leveling gives no mastery.</p>
+            </div>
+
+            <div class="border border-[#1c1f27] rounded-lg p-4 space-y-2">
+              <p class="text-[10px] text-[#3a4050] uppercase tracking-[0.08em]">How to check your mastery XP in-game</p>
+              <p class="text-[11px] text-[#5a6a88] leading-relaxed">
+                Press <kbd class="bg-[#1c1f27] text-[#c49a3c] text-[10px] px-1.5 py-0.5 rounded font-mono">ESC</kbd>
+                → click your username in the top-left → the Mastery Rank bar shows your current XP and progress to the next rank.
+              </p>
+              <p class="text-[11px] text-[#5a6a88] leading-relaxed">
+                During missions, the <span class="text-[#8a9ab8]">Affinity panel</span> on the right side of your HUD shows XP earned per weapon and warframe in real time.
+              </p>
+              <p class="text-[11px] text-[#5a6a88] leading-relaxed">
+                You can also run a <span class="text-[#8a9ab8]">Mastery Rank test</span> at any relay — one attempt per 24 hours.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <!-- Page column -->
     <div class="max-w-[640px] mx-auto px-5">
 
@@ -283,6 +391,13 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                     ? 'text-[#c49a3c] border-[rgba(196,154,60,0.35)]'
                     : 'text-[#5a6a88] border-[#1c1f27] hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.3)]'">
             Spoilers {{ showSpoilers ? 'on' : 'off' }}
+          </button>
+          <button @click="masteryModal = true"
+                  class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
+                         rounded cursor-pointer transition-all duration-150
+                         text-[#5a6a88] bg-transparent border border-[#1c1f27]
+                         hover:text-[#c49a3c] hover:border-[rgba(196,154,60,0.3)]">
+            {{ t.masteryMode }}
           </button>
           <button @click="beginnerModal = true"
                   class="text-[9.5px] font-bold uppercase tracking-[0.1em] px-[9px] py-1
