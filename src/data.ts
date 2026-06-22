@@ -204,10 +204,10 @@ export const ITEMS: Item[] = [
         rank: 1,
       },
       {
-        mission: "Any node",
+        mission: "Capture",
         planet: "Void",
         type: "Container Run",
-        note: "Equip Loot Detector so containers show on the minimap, then sweep the tileset opening everything. Limbo with max range Cataclysm keeps you safe in the rift while you do it, or use Xaku with max range for the same result. Argon comes from lockers and breakable crates, not enemy drops.",
+        note: "Capture is the fastest mission type for container runs: complete the objective in seconds, then sweep the whole tileset at your own pace. Equip Loot Detector so containers show on the minimap. Argon comes from lockers and breakable crates, not enemy drops.",
         rank: 2,
       },
       { mission: "Any node", planet: "Void", type: "Any", rank: 3 },
@@ -219,10 +219,10 @@ export const ITEMS: Item[] = [
     imageName: "controlModule.png",
     sources: [
       {
-        mission: "Any",
+        mission: "Capture",
         planet: "Void",
         type: "Container Run",
-        note: "Same container run as Argon Crystal works here too. Void tilesets drop both from the same lockers and crates.",
+        note: "Same Capture + container run as Argon Crystal. Void tilesets drop both from the same lockers and crates — one run farms both at once.",
         rank: 1,
       },
       { mission: "Any", planet: "Neptune", type: "Any", rank: 2 },
