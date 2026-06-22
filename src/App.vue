@@ -44,7 +44,7 @@ const showSpoilers     = ref(false)
 const IMG_CACHE_KEY = 'helios_img_v1'
 const IMG_CACHE_TTL = 86_400_000 // 24 h
 
-;(async () => {
+void (async () => {
   try {
     const raw = localStorage.getItem(IMG_CACHE_KEY)
     if (raw) {
