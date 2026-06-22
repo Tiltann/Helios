@@ -479,8 +479,15 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                           background: PLANETS[src.planet].color + '15',
                           border: `1px solid ${PLANETS[src.planet].color}35`,
                         }">
-                    <span class="w-[5px] h-[5px] rounded-full shrink-0 inline-block"
-                          :style="{ background: PLANETS[src.planet].color }"/>
+                    <span class="relative shrink-0 w-[14px] h-[14px] flex items-center justify-center">
+                      <span class="w-[5px] h-[5px] rounded-full"
+                            :style="{ background: PLANETS[src.planet].color }"/>
+                      <img v-if="PLANETS[src.planet].img"
+                           :src="`https://cdn.warframestat.us/img/${PLANETS[src.planet].img}`"
+                           class="absolute inset-0 w-full h-full object-contain"
+                           alt=""
+                           @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"/>
+                    </span>
                     {{ tPlanet(src.planet) }}
                   </span>
                   <span v-else class="text-[11px] text-[#5a6a88]">{{ tPlanet(src.planet) }}</span>
