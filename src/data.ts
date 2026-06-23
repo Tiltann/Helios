@@ -535,6 +535,7 @@ export const ITEMS: Item[] = [
   {
     name: "Credits",
     category: "resource",
+    imageName: "credits.png",
     sources: [
       {
         mission: "The Index",
@@ -1909,7 +1910,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi A6, Lith R4, Meso C6, Neo R4",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi A6 (rare). Neuroptics: Lith R4 (rare). Chassis: Meso C6 (rare). Systems: Neo R4 (rare).",
         rank: 1,
@@ -1932,7 +1933,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi S3, Lith S9, Meso S4, Neo S5",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi S3 (rare). Neuroptics: Meso S4 (rare). Chassis: Lith S9 (rare). Systems: Neo S5 (rare).",
         rank: 1,
@@ -1955,7 +1956,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi M2, Lith M7, Meso M3, Neo M4",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi M2 (rare). Neuroptics: Lith M7 (rare). Chassis: Meso M3 (rare). Systems: Neo M4 (rare).",
         rank: 1,
@@ -1971,7 +1972,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi A4, Neo A1 + others",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi A4 (rare). Neuroptics: Neo A1 (rare). Chassis and Systems relics return during Prime Resurgence, check wiki for the full list.",
         rank: 1,
@@ -1993,7 +1994,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi G5, Lith G6, Meso G4, Neo G3",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi G5 (rare). Neuroptics: Lith G6 (rare). Chassis: Meso G4 (rare). Systems: Neo G3 (rare).",
         rank: 1,
@@ -2009,7 +2010,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi N10, Lith N8, Meso N11, Neo N14",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi N10 (rare). Neuroptics: Lith N8 (rare). Chassis: Neo N14 (rare). Systems: Meso N11 (rare).",
         rank: 1,
@@ -2032,7 +2033,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi H5, Lith H4, Meso H2, Neo H2",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi H5 (rare). Neuroptics: Lith H4 (rare). Chassis: Meso H2 (rare). Systems: Neo H2 (rare).",
         rank: 1,
@@ -2055,7 +2056,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi O5, Lith O5, Meso O5, Neo O3",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Lith O5 (rare). Neuroptics: Neo O3 (rare). Chassis: Meso O5 (rare). Systems: Axi O5 (rare).",
         rank: 1,
@@ -2078,7 +2079,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi K7, Lith K6, Meso K5, Neo K4",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi K7 (rare). Neuroptics: Lith K6 (rare). Chassis: Meso K5 (rare). Systems: Neo K4 (rare).",
         rank: 1,
@@ -2101,7 +2102,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi R4, Lith R9, Meso R8, Neo R9",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi R4 (rare). Neuroptics: Lith R9 (rare). Chassis: Meso R8 (rare). Systems: Neo R9 (rare).",
         rank: 1,
@@ -2124,7 +2125,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi W3, Lith W3, Meso W5, Neo W3",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi W3 (rare). Neuroptics: Lith W3 (rare). Chassis: Meso W5 (rare). Systems: Neo W3 (rare).",
         rank: 1,
@@ -2147,7 +2148,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Various relics (all vaulted)",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "All relics are currently vaulted. Blueprint: Lith G11, Meso G3, Neo G4, Axi G6/G9. Chassis: Neo P5, Lith K6, Meso A4. Neuroptics: Lith S12, Neo N18, Meso C10. Systems: Meso K5, Axi G7, Neo N21. Relics return during Prime Resurgence.",
         rank: 1,
@@ -2170,7 +2171,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi N5, Lith N5, Meso N6, Neo N10",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Blueprint: Axi N5 (rare). Neuroptics: Neo N10 (rare). Chassis: Lith N5 (rare). Systems: Meso N6 (rare). Relics return during Prime Resurgence.",
         rank: 1,
@@ -2193,7 +2194,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Axi T3, Lith T3, Meso T3, Neo T1",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Relics return during Prime Resurgence. Check wiki for current designations.",
         rank: 1,
@@ -2216,7 +2217,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Meso K2, Neo K2, Axi L4",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Relics return during Prime Resurgence. Check wiki for current designations.",
         rank: 1,
@@ -2239,7 +2240,7 @@ export const ITEMS: Item[] = [
     sources: [
       {
         mission: "Meso V4, Neo V8, Axi V8",
-        planet: "Void",
+        planet: "Any",
         type: "Void Fissure",
         note: "Relics return during Prime Resurgence. Check wiki for current designations.",
         rank: 1,
@@ -3075,6 +3076,7 @@ export const ITEMS: Item[] = [
   {
     name: "Calda Toroid",
     category: "resource",
+    imageName: "caldaToroid.png",
     sources: [
       {
         mission: "Enrichment Labs",
@@ -3088,6 +3090,7 @@ export const ITEMS: Item[] = [
   {
     name: "Sola Toroid",
     category: "resource",
+    imageName: "solaToroid.png",
     sources: [
       {
         mission: "Temple of Profit",
@@ -3101,6 +3104,7 @@ export const ITEMS: Item[] = [
   {
     name: "Vega Toroid",
     category: "resource",
+    imageName: "vegaToroid.png",
     sources: [
       {
         mission: "Spaceport / Caves",
@@ -3114,6 +3118,7 @@ export const ITEMS: Item[] = [
   {
     name: "Crisma Toroid",
     category: "resource",
+    imageName: "crismaToroid.png",
     sources: [
       {
         mission: "Profit-Taker Orb",

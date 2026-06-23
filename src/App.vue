@@ -94,6 +94,7 @@ void (async () => {
     }
     imageMap.value = map
     try { localStorage.setItem(IMG_CACHE_KEY, JSON.stringify({ ts: Date.now(), map })) } catch {}
+    preloadImages()
   } catch { /* API failed — stale cache stays active, images remain visible */ }
 })()
 
@@ -193,6 +194,36 @@ function getImage(item: Item): string {
   return imageMap.value[item.name] ?? ''
 }
 
+function preloadImages() {
+  const urls = new Set<string>()
+  for (const item of ITEMS) {
+    const url = getImage(item)
+    if (url) urls.add(url)
+  }
+  for (const planet of Object.values(PLANETS)) {
+    if (planet.img) urls.add(`https://cdn.warframestat.us/img/${planet.img}`)
+  }
+  for (const filename of Object.values(RELIC_TIER_IMAGE)) {
+    urls.add(`https://cdn.warframestat.us/img/${filename}`)
+  }
+  for (const url of urls) {
+    const img = new Image()
+    img.src = url
+  }
+}
+
+function handleImageError(e: Event) {
+  const img = e.target as HTMLImageElement
+  const retries = parseInt(img.dataset.retries ?? '0')
+  if (retries < 2) {
+    img.dataset.retries = String(retries + 1)
+    const src = img.src.split('?')[0]
+    setTimeout(() => { img.src = src }, 800 * (retries + 1))
+  } else {
+    img.style.display = 'none'
+  }
+}
+
 function tItem(name: string): string   { return ITEM_LABELS[locale.value][name]   ?? name }
 function tPlanet(p: string): string    { return PLANET_LABELS[locale.value][p]      ?? p }
 function tType(ty: string): string     { return TYPE_LABELS[locale.value][ty]       ?? ty }
@@ -213,7 +244,7 @@ onMounted(async () => {
   if (LOCALES.includes(lang as Locale)) locale.value = lang as Locale
   input.value?.focus()
   window.addEventListener('keydown', spaceToFocus)
-
+  preloadImages()
 })
 
 onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
@@ -504,7 +535,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                 <img v-if="getImage(item)" :key="getImage(item)" :src="getImage(item)" alt=""
                      class="relative z-[1] w-[22px] h-[22px] object-contain"
                      style="opacity:0.88"
-                     @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
+                     @error="handleImageError"/>
               </div>
 
               <!-- Text -->
@@ -577,7 +608,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
                             <img v-if="PLANETS[src.planet].img"
                                  :src="`https://cdn.warframestat.us/img/${PLANETS[src.planet].img}`"
                                  class="absolute inset-0 w-full h-full object-contain" alt=""
-                                 @error="(e) => (e.target as HTMLImageElement).style.display='none'"/>
+                                 @error="handleImageError"/>
                           </span>
                           {{ tPlanet(src.planet) }}
                         </span>
