@@ -1,4 +1,6 @@
 <script setup lang="ts">
+declare const __LAST_UPDATED__: string
+const LAST_UPDATED = __LAST_UPDATED__
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import Fuse from 'fuse.js'
 import { ITEMS, PLANETS, type Item } from './data'
@@ -423,6 +425,7 @@ onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
             <div>
               <div class="text-[12px] font-bold uppercase tracking-[0.26em]" style="color:#d4a84c">HELIOS</div>
               <div class="text-[10px] mt-px" style="color:#303852;letter-spacing:0.04em">{{ t.subtitle }}</div>
+              <div class="text-[9px] mt-px" style="color:#202838;letter-spacing:0.04em">Updated {{ LAST_UPDATED }}</div>
             </div>
           </div>
 
