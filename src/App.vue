@@ -217,12 +217,11 @@ function preloadImages() {
 function handleImageError(e: Event) {
   const img = e.target as HTMLImageElement
   const retries = parseInt(img.dataset.retries ?? '0')
+  img.style.display = 'none'
   if (retries < 2) {
     img.dataset.retries = String(retries + 1)
     const src = img.src.split('?')[0]
-    setTimeout(() => { img.src = src }, 800 * (retries + 1))
-  } else {
-    img.style.display = 'none'
+    setTimeout(() => { img.style.display = ''; img.src = src }, 1000 * (retries + 1))
   }
 }
 
@@ -246,7 +245,6 @@ onMounted(async () => {
   if (LOCALES.includes(lang as Locale)) locale.value = lang as Locale
   input.value?.focus()
   window.addEventListener('keydown', spaceToFocus)
-  preloadImages()
 })
 
 onUnmounted(() => window.removeEventListener('keydown', spaceToFocus))
